@@ -153,11 +153,14 @@ const navigate = async (path) => {
 /* =========================
    CONTENT
 ========================= */
+/* Update this in App.vue style section */
 .content {
   flex: 1;
-  padding: 0 20px 120px;     /* Added clear padding around side margins */
+  margin: 0 auto;
+  padding: 0 10px 120px; /* Reduced side padding from 16px/20px to 10px */
   width: 100%;
 }
+
 
 /* =========================
    BOTTOM NAV

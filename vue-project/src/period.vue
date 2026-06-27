@@ -173,15 +173,17 @@ const formatDate = (date) => {
   transform: scale(0.95);
 }
 
+/* Update this in Period.vue style section */
 .calendar-wrapper {
   background: white;
   border-radius: 24px;
-  padding: 16px 12px;
+  padding: 12px 6px;  /* Reduced internal horizontal padding */
   box-shadow: 0 10px 28px rgba(214, 51, 132, 0.04);
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto;   
 }
+
 
 /* Settings Overlay Modals */
 .modal-overlay {
