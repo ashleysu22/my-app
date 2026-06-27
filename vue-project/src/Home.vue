@@ -1,137 +1,136 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue';
+import { ref, watch, nextTick } from 'vue'
 
-// ==========================================
-// 1. TODO LIST LOGIC (Your Existing Code)
-// ==========================================
-const newTodo = ref('');
-const todos = ref(JSON.parse(localStorage.getItem('my-todos')) || []);
+/* =========================
+   TODO LIST
+========================= */
+const newTodo = ref('')
+const todos = ref(JSON.parse(localStorage.getItem('my-todos') || '[]'))
 
-watch(todos, (newVal) => {
-  localStorage.setItem('my-todos', JSON.stringify(newVal));
-}, { deep: true });
+watch(todos, (val) => {
+  localStorage.setItem('my-todos', JSON.stringify(val))
+}, { deep: true })
 
 const addTodo = () => {
-  if (newTodo.value.trim() !== '') {
+  if (newTodo.value.trim()) {
     todos.value.push({
       id: Date.now(),
       text: newTodo.value
-    });
-    newTodo.value = ''; 
+    })
+    newTodo.value = ''
   }
-};
+}
 
 const deleteTodo = (id) => {
-  todos.value = todos.value.filter(t => t.id !== id);
-};
+  todos.value = todos.value.filter(t => t.id !== id)
+}
 
-// ==========================================
-// 2. CONNECTED OPENAI API CHAT LOGIC
-// ==========================================
-const userInput = ref('');
-const isAiTyping = ref(false);
-const chatHistoryRef = ref(null);
+/* =========================
+   GEMINI AI CHAT
+========================= */
 
-// WARNING: For safe live production apps, proxy your requests through a backend server.
-// Storing keys in frontend code exposes them if someone inspects your web console source.
-const OPENAI_API_KEY = 'AQ.Ab8RN6LNkmTbmCAKr-FqJlt_1Mf9VwGpdZ3QmLNNs-wDljeXJA'; 
+const userInput = ref('')
+const isAiTyping = ref(false)
+const chatHistoryRef = ref(null)
+
+const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY_HERE'
+
+const chatMessages = ref([
+  {
+    id: 1,
+    role: 'ai',
+    text: '你好 🌸 我是你的溫柔小助手，有什麼想問的嗎？'
+  }
+])
 
 const preQuestions = ref([
   { label: '🔮 明日運勢如何？' },
   { label: '🌸 經期不舒服怎麼辦？' },
   { label: '🌤️ 看看今日天氣資訊' },
   { label: '✨ 幫我想個願望點子' }
-]);
-
-const chatMessages = ref([
-  { id: 1, role: 'ai', text: '你好！我是妳的心願陪護小助手 🌸 隨時可以和我聊聊妳的今日心情、願望，或點擊下方快捷鍵向我提問喔！' }
-]);
+])
 
 const scrollToBottom = async () => {
-  await nextTick();
+  await nextTick()
   if (chatHistoryRef.value) {
-    chatHistoryRef.value.scrollTop = chatHistoryRef.value.scrollHeight;
+    chatHistoryRef.value.scrollTop = chatHistoryRef.value.scrollHeight
   }
-};
+}
 
-// Main trigger function connected to OpenAI API endpoint
 const sendChatMessage = async (forcedText = '') => {
-  const targetText = forcedText || userInput.value;
-  
-  if (!targetText.trim() || isAiTyping.value) return;
+  const text = forcedText || userInput.value
 
-  // 1. Push user question block to the interface
+  if (!text.trim() || isAiTyping.value) return
+
+  // user message
   chatMessages.value.push({
     id: Date.now(),
     role: 'user',
-    text: targetText
-  });
+    text
+  })
 
-  if (!forcedText) {
-    userInput.value = '';
-  }
-  
-  scrollToBottom();
-  isAiTyping.value = true;
+  userInput.value = ''
+  isAiTyping.value = true
+  scrollToBottom()
 
   try {
-    // 2. Construct the full context memory payload matching OpenAI format specifications
-    // We add a System Prompt at the top to force the AI to keep its persona sweet and short.
-    const apiMessages = [
-      { 
-        role: "system", 
-        content: "你是『心想事成』手機App裡的溫柔、貼心女性健康與祈願小助手。說話語氣必須充滿親和力、溫柔、常使用一些可愛的表情符號（如🌸、✨、🥺）。請保持回答精簡、溫馨，非常適合在手機螢幕上閱讀，不要長篇大論。" 
+    // Gemini prompt (system style included manually)
+    const fullPrompt = `
+你是溫柔貼心的女性助手 🌸
+請用簡短、溫暖、有emoji的方式回答：
+
+${text}
+    `
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                { text: fullPrompt }
+              ]
+            }
+          ]
+        })
       }
-    ];
-
-    // Map your reactive screen messages into OpenAI API compatible roles
-    chatMessages.value.forEach(msg => {
-      apiMessages.push({
-        role: msg.role === 'ai' ? 'assistant' : 'user',
-        content: msg.text
-      });
-    });
-
-    // 3. Fire the real HTTP request directly to OpenAI servers
-    const response = await fetch('https://openai.com', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini', // Cost-effective, incredibly fast model perfect for mobile applications
-        messages: apiMessages,
-        temperature: 0.7
-      })
-    });
+    )
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
+      throw new Error(`API Error: ${response.status}`)
     }
 
-    const data = await response.json();
-    const aiTextResponse = data.choices[0].message.content;
+    const data = await response.json()
 
-    // 4. Append real response returned from OpenAI pipeline
+    const aiText =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      '抱歉，我暫時無法回應 🌸'
+
     chatMessages.value.push({
       id: Date.now() + 1,
       role: 'ai',
-      text: aiTextResponse
-    });
+      text: aiText
+    })
 
-  } catch (error) {
-    console.error('OpenAI Connection Error:', error);
+  } catch (err) {
+    console.error(err)
+
     chatMessages.value.push({
       id: Date.now() + 1,
       role: 'ai',
-      text: '對不起姐姐...我的網路連線似乎出了一點小狀況 🌸 請再試一次看看好嗎？'
-    });
+      text: '網路好像有點問題 🌸 請稍後再試一次'
+    })
   } finally {
-    isAiTyping.value = false;
-    scrollToBottom();
+    isAiTyping.value = false
+    scrollToBottom()
   }
-};
+}
 </script>
 
 <template>
