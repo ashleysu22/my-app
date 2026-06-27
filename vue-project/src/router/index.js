@@ -1,3 +1,4 @@
+
 import { createRouter, createWebHistory } from 'vue-router';
 import App from '../App.vue';  // The main page
 import Home from '../Home.vue'; 
@@ -13,6 +14,6 @@ const routes = [
 
 
 export const router = createRouter({
-  history: createWebHistory(),
-  routes,
+  history: createWebHistory('/my-app/'), // Add your repo name here
+  routes
 });

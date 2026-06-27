@@ -65,6 +65,12 @@ const throwJiaobei = () => {
       <button class="main-throw-btn" @click="throwJiaobei" :disabled="isThrowing">
         {{ isThrowing ? '正在掷筊...' : '开始掷筊' }}
       </button>
+
+      <!-- 在按鈕下方的文字 -->
+      <div class="divine-hint">
+        閉上雙眼，聽從內心的聲音。✨
+      </div>
+
     </div>
   </div>
 </template>
@@ -91,7 +97,7 @@ const throwJiaobei = () => {
 .jiaobei-container {
   background: white;
   width: 100%;
-  max-width: 350px;
+  max-width: 500px;
   border-radius: 20px;
   padding: 30px 20px;
   text-align: center;
@@ -179,4 +185,12 @@ const throwJiaobei = () => {
   background: #ccc;
   box-shadow: none;
 }
+
+.divine-hint {
+  letter-spacing: 1.5px; /* 增加字與字之間的距離，看起來更高級 */
+  margin-top: 18px;
+  color: #c08ea4; /* 使用帶點粉的灰色，跟背景更融合 */
+  font-size: 0.85rem;
+}
+
 </style>

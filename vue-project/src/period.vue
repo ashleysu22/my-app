@@ -17,6 +17,14 @@
       />
     </div>
 
+    <!-- 日历组件之后 -->
+    <div class="reminder-text">
+      🌸 記得記錄下妳的經期喔，愛護自己從了解身體開始！
+    </div>
+
+
+
+
 
 <!-- Settings Popup (Modal) -->
 <div v-if="showSettings" class="modal-overlay" @click.self="showSettings = false">
@@ -297,6 +305,33 @@ const formatDate = (date) => {
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+.reminder-text {
+  margin-top: 20px;
+  text-align: center;
+  color: #d63384; /* 保持与标题一致的深粉色 */
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.5); /* 淡淡的半透明白底 */
+  padding: 12px;
+  border-radius: 12px;
+  /* 增加一个小动画，让它看起来更温柔 */
+  animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 适配移动端字体大小 */
+@media (max-width: 600px) {
+  .reminder-text {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
 }
 
 </style>

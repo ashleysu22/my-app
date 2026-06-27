@@ -4,8 +4,11 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-// https://vite.dev/config/
+// Replace <username> and <repo-name> with your GitHub username and repo
+const repoName = 'vue-project'
+
 export default defineConfig({
+  base: '/my-app/',  // <-- set base path for GitHub Pages
   plugins: [
     vue(),
     vueDevTools(),
