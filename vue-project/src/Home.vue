@@ -34,7 +34,7 @@ const chatHistoryRef = ref(null);
 
 // WARNING: For safe live production apps, proxy your requests through a backend server.
 // Storing keys in frontend code exposes them if someone inspects your web console source.
-const OPENAI_API_KEY = ' '; 
+const OPENAI_API_KEY = 'AQ.Ab8RN6LNkmTbmCAKr-FqJlt_1Mf9VwGpdZ3QmLNNs-wDljeXJA'; 
 
 const preQuestions = ref([
   { label: '🔮 明日運勢如何？' },
