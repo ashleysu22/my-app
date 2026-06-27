@@ -112,23 +112,30 @@ const deleteTodo = (id) => {
 }
 
 /* 輸入區域適配 */
+/* 修改此處：確保輸入區域完美貼齊卡片內邊緣 */
 .input-section { 
   display: flex; 
-  gap: 10px; 
+  gap: 8px;              /* Slightly reduced gap for narrow mobile screens */
   margin-bottom: 15px; 
+  width: 100%;           /* Explicitly contain within parent card bounds */
+  box-sizing: border-box;
 }
 
+/* 修改此處：修正造成元件爆出右邊邊界的問題 */
 .todo-input { 
   flex: 1; 
+  min-width: 0;          /* IMPORTANT: Allows flex item to shrink below its content size */
   border: 1px solid #fdf0f6; 
-  border-radius: 14px; 
-  padding: 14px 16px; 
+  border-radius: 12px; 
+  padding: 12px 12px;    /* Slightly reduced padding to save safe-space */
   background: #fffafa;
   outline: none;
-  font-size: 16px; 
+  font-size: 16px;       
   transition: border-color 0.2s;
   font-family: inherit;
+  box-sizing: border-box;
 }
+
 
 .todo-input:focus {
   border-color: #ffb6c1;
