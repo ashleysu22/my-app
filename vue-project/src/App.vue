@@ -81,7 +81,7 @@ const navigate = async (path) => {
 
 <style scoped>
 /* =========================
-   GLOBAL FIXES (Forces background and size to 100%)
+   GLOBAL FIXES
 ========================= */
 * {
   box-sizing: border-box;
@@ -92,7 +92,7 @@ const navigate = async (path) => {
   padding: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  background-color: #ffeef2 !important; /* Fixes black bar edge backgrounds */
+  background-color: #ffeef2 !important; 
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -102,7 +102,7 @@ const navigate = async (path) => {
    DESIGN TOKENS
 ========================= */
 :root {
-  --app-max-width: 650px;
+  --app-max-width: 480px; /* Reduced for better mobile proportion */
 }
 
 /* =========================
@@ -111,9 +111,10 @@ const navigate = async (path) => {
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  width: 100vw;               
+  align-items: center;        /* Centers your content horizontally */
+  width: 100%;               
   min-height: 100vh;          
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   background-color: #ffeef2;  
   box-sizing: border-box;
@@ -131,6 +132,7 @@ const navigate = async (path) => {
 ========================= */
 .header, .content, .bottom-nav {
   width: 100%;                
+  max-width: 480px;           /* Prevents cards from spreading too wide */
   box-sizing: border-box;
 }
 
@@ -139,14 +141,13 @@ const navigate = async (path) => {
 ========================= */
 .header {
   text-align: center;
-  padding: calc(env(safe-area-inset-top) + 20px) 0 10px;
-  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 20px) 16px 10px;
 }
 
 .header h1 {
   color: #d63384;
-  font-size: clamp(1.2rem, 5vw, 1.8rem);
-  margin: 10px 0;
+  font-size: clamp(1.4rem, 6vw, 1.8rem);
+  margin: 10px 0 5px;
 }
 
 /* =========================
@@ -154,8 +155,7 @@ const navigate = async (path) => {
 ========================= */
 .content {
   flex: 1;
-  margin: 0 auto;
-  padding: 0 16px 120px;
+  padding: 0 20px 120px;     /* Added clear padding around side margins */
   width: 100%;
 }
 
@@ -165,22 +165,25 @@ const navigate = async (path) => {
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Centers the fixed bottom navigation */
   display: flex;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(15px);
-  padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
   z-index: 2000;
   width: 100%;
+  border-top-left-radius: 24px;   /* Added premium rounded curves */
+  border-top-right-radius: 24px;
+  box-shadow: 0 -4px 20px rgba(214, 51, 132, 0.06);
 }
 
 .nav-links {
   display: flex;
-  height: 70px;
+  height: 65px;
   width: 100%;
   justify-content: space-around;
 }
@@ -206,16 +209,16 @@ const navigate = async (path) => {
 }
 
 .nav-item:active {
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 
 .icon {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   margin-bottom: 2px;
 }
 
 .label {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -226,7 +229,7 @@ const navigate = async (path) => {
 .jiaobei-icon {
   display: flex;
   gap: 3px;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .moon {
@@ -243,54 +246,6 @@ const navigate = async (path) => {
 }
 
 /* =========================
-   RESPONSIVE
-========================= */
-@media (min-width: 768px) {
-  .content {
-    padding-top: 40px;
-  }
-
-  .nav-links {
-    height: 80px;
-  }
-
-  .label {
-    font-size: 0.85rem;
-  }
-
-  .icon {
-    font-size: 1.6rem;
-  }
-}
-
-@media (max-width: 320px) {
-  .nav-item {
-    min-width: 0;
-  }
-
-  .label {
-    display: none;
-  }
-}
-
-@media (min-width: 1024px) {
-  .dashboard-container {
-    max-width: var(--app-max-width);
-    margin: 0 auto;
-    box-shadow: 0 0 30px rgba(0,0,0,0.05);
-  }
-
-  .bottom-nav {
-    justify-content: center;
-  }
-
-  .nav-links {
-    width: 100%;
-    max-width: var(--app-max-width);
-  }
-}
-
-/* =========================
    LOADING OVERLAY
 ========================= */
 .loading-overlay {
@@ -299,7 +254,7 @@ const navigate = async (path) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(253, 240, 246, 0.9);
+  background: rgba(253, 240, 246, 0.95);
   backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
@@ -322,9 +277,6 @@ const navigate = async (path) => {
   font-size: 1rem;
 }
 
-/* =========================
-   ANIMATION
-========================= */
 @keyframes flower-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -338,9 +290,5 @@ const navigate = async (path) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.fade-leave-to {
-  pointer-events: none;
 }
 </style>

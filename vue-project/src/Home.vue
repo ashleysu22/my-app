@@ -79,34 +79,36 @@ const deleteTodo = (id) => {
   gap: 16px;
 }
 
-/* 卡片：響應式內邊距 */
+/* 卡片：安全內邊距與平滑黑影 */
 .card { 
   background: white; 
-  padding: clamp(16px, 4vw, 24px); 
-  border-radius: 20px; 
-  box-shadow: 0 8px 24px rgba(214, 51, 132, 0.05);
+  padding: 20px; 
+  border-radius: 24px; 
+  box-shadow: 0 10px 28px rgba(214, 51, 132, 0.04);
   box-sizing: border-box;
+  width: 100%;
 }
 
 .card-title {
   font-weight: bold;
+  font-size: 1.05rem;
   color: #d63384;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .card-content .temp {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2b2b2b;
 }
 
 .card-content .location {
-  font-size: 0.9rem;
-  color: #888;
-  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #8e8e8e;
+  margin-top: 6px;
 }
 
 /* 輸入區域適配 */
@@ -119,11 +121,11 @@ const deleteTodo = (id) => {
 .todo-input { 
   flex: 1; 
   border: 1px solid #fdf0f6; 
-  border-radius: 12px; 
-  padding: 12px 16px; 
+  border-radius: 14px; 
+  padding: 14px 16px; 
   background: #fffafa;
   outline: none;
-  font-size: 16px; /* 防止 iOS 自動縮放 */
+  font-size: 16px; 
   transition: border-color 0.2s;
   font-family: inherit;
 }
@@ -136,17 +138,17 @@ const deleteTodo = (id) => {
   background: linear-gradient(135deg, #ff69b4, #d63384); 
   color: white; 
   border: none; 
-  border-radius: 12px; 
-  width: 50px;
-  min-width: 50px;
-  font-size: 1.5rem;
+  border-radius: 14px; 
+  width: 52px;
+  min-width: 52px;
+  font-size: 1.6rem;
   cursor: pointer; 
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 列表項：適配長文字 */
+/* 列表項 */
 .todo-item {
   background: #fff;
   border: 1px solid #fff5f8;
@@ -156,14 +158,14 @@ const deleteTodo = (id) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.01);
 }
 
 .todo-text {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #555;
+  color: #444;
   font-weight: 500;
   overflow: hidden;
   flex: 1;
@@ -180,7 +182,7 @@ const deleteTodo = (id) => {
 .del-btn { 
   background: none; 
   border: none;
-  color: #b0b0b0;
+  color: #ccc;
   cursor: pointer;
   font-size: 1rem;
   padding: 4px;
@@ -192,8 +194,8 @@ const deleteTodo = (id) => {
 
 .empty-msg {
   text-align: center;
-  color: #b0b0b0;
-  margin-top: 20px;
+  color: #b8b8b8;
+  margin-top: 24px;
   font-size: 0.9rem;
 }
 </style>
