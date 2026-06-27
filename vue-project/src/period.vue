@@ -149,56 +149,67 @@ const formatDate = (date) => {
 
 <style scoped>
 .period-container {
-  padding: clamp(10px, 4vw, 25px); /* Fluid padding based on screen size */
-  background-color: #fdf0f6;
-  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* Align settings gear neatly below the main application global title */
+.calendar-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.settings-btn {
+  background: white;
+  border: 1px solid #fdf0f6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d63384;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(214, 51, 132, 0.03);
+  transition: transform 0.2s ease;
+}
+
+.settings-btn:active {
+  transform: scale(0.95);
 }
 
 .calendar-wrapper {
   background: white;
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-radius: 24px;
+  padding: 16px 12px;
+  box-shadow: 0 10px 28px rgba(214, 51, 132, 0.04);
   width: 100%;
-  max-width: 800px; /* Limit width for large tablets/desktops */
-  margin: 0 auto;   /* Center it */
+  box-sizing: border-box;
+  margin: 0 auto;   
 }
 
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.settings-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-/* Overlay with high z-index to stay on top */
+/* Settings Overlay Modals */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0;
+  top: 0; 
+  left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4); /* Darkens the background */
-  backdrop-filter: blur(4px);    /* Optional: blurs the background calendar */
+  background: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(4px);    
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;                 /* MUST be high to cover the calendar */
+  z-index: 9999; /* Increased to sit perfectly above all components */
 }
 
 .modal-content {
   background: white;
-  width: 90%;
-  max-width: 350px;
+  width: 88%;
+  max-width: 340px;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
@@ -214,12 +225,16 @@ const formatDate = (date) => {
 
 .modal-header h3 {
   margin: 0;
-  color: #d81b60; /* Darker pink */
+  color: #d63384; 
   font-size: 1.2rem;
 }
 
 .close-icon {
-  background: none; border: none; font-size: 1.2rem; color: #999; cursor: pointer;
+  background: none; 
+  border: none; 
+  font-size: 1.2rem; 
+  color: #999; 
+  cursor: pointer;
 }
 
 .input-group {
@@ -238,22 +253,23 @@ const formatDate = (date) => {
 .input-group input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #f0f0f0;
+  border: 2px solid #fdf0f6;
   border-radius: 12px;
   font-size: 1rem;
-  box-sizing: border-box; /* Prevents overflow */
+  box-sizing: border-box; 
   transition: border-color 0.2s;
+  background: #fffafa;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #f48fb1;
+  border-color: #ffb6c1;
 }
 
 .save-btn {
   width: 100%;
   padding: 14px;
-  background: #f06292;
+  background: linear-gradient(135deg, #ff69b4, #d63384);
   color: white;
   border: none;
   border-radius: 12px;
@@ -261,77 +277,56 @@ const formatDate = (date) => {
   font-size: 1rem;
   cursor: pointer;
   margin-top: 10px;
-  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(214, 51, 132, 0.2);
 }
 
-.save-btn:hover {
-  background: #d81b60;
+.save-btn:active {
+  transform: scale(0.98);
 }
 
-/* 在 <style scoped> 中添加 */
 :deep(.future-period) {
-  opacity: 0.7; /* 让未来的预测看起来半透明一点 */
+  opacity: 0.7; 
 }
 
 :deep(.current-period) {
   font-weight: bold;
-  border: 2px solid #f06292;
+  border: 2px solid #d63384;
   border-radius: 50%;
 }
 
-/* 历史周期：使用更淡的灰色，看起来不抢眼 */
 :deep(.history-period) {
-  opacity: 0.9;
+  opacity: 0.6;
   filter: grayscale(1);
 }
 
-/* Ensure the calendar fills the available width */
 :deep(.vc-container) {
   width: 100% !important;
   border: none !important;
 }
 
-/* Adjust font size for small phones */
 @media (max-width: 360px) {
   :deep(.vc-pane) {
-    min-width: 280px;
-  }
-  :deep(.vc-header) {
-    padding: 0 5px;
+    min-width: 100%;
   }
 }
 
-/* Smooth entry animation */
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 .reminder-text {
-  margin-top: 20px;
+  margin-top: 8px;
   text-align: center;
-  color: #d63384; /* 保持与标题一致的深粉色 */
-  font-size: 0.95rem;
+  color: #d63384; 
+  font-size: 0.9rem;
   font-weight: 500;
   line-height: 1.5;
-  background: rgba(255, 255, 255, 0.5); /* 淡淡的半透明白底 */
-  padding: 12px;
-  border-radius: 12px;
-  /* 增加一个小动画，让它看起来更温柔 */
-  animation: fadeIn 1s ease-in;
+  background: rgba(255, 255, 255, 0.6); 
+  padding: 14px;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(214, 51, 132, 0.02);
+  box-sizing: border-box;
+  width: 100%;
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* 适配移动端字体大小 */
-@media (max-width: 600px) {
-  .reminder-text {
-    font-size: 0.85rem;
-    padding: 10px;
-  }
-}
-
 </style>
