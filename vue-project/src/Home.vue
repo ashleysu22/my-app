@@ -33,7 +33,7 @@ const userInput = ref('')
 const isAiTyping = ref(false)
 const chatHistoryRef = ref(null)
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
+const GEMINI_API_KEY = "AQ.Ab8RN6KZenIJScqjpMSYxzBZjpS0_uK4TkJB9EyFPIhxg1fS8wZjpS0_uK4TkJB9EyFPIhxg1fS8w"
 
 const chatMessages = ref([
   {
