@@ -96,6 +96,15 @@ const navigate = async (path) => {
   text-size-adjust: 100%;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffeef2; /* Match your app's pink background */
+}
+
+
 /* =========================
    DESIGN TOKENS
 ========================= */
@@ -107,15 +116,14 @@ const navigate = async (path) => {
    CONTAINER
 ========================= */
 .dashboard-container {
-  background-color: #fdf0f6;
-  min-height: 100dvh;
-  min-height: 100vh; /* fallback */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin: 0 auto;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  width: 100vw;               /* Forces full width of the screen */
+  min-height: 100vh;          /* Forces full height of the screen */
+  margin: 0;
+  padding: 0;
+  background-color: #ffeef2;  /* Match your app's background */
+  box-sizing: border-box;
 }
 
 /* fallback for old browsers */
@@ -128,11 +136,9 @@ const navigate = async (path) => {
 /* =========================
    HEADER / CONTENT / NAV WIDTH SYSTEM
 ========================= */
-.header,
-.content,
-.nav-links {
-  width: 100%;
-  max-width: var(--app-max-width);
+.header, .content, .bottom-nav {
+  width: 100%;                /* Ensures child sections span fully */
+  box-sizing: border-box;
 }
 
 /* =========================
