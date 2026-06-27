@@ -88,6 +88,27 @@ const deleteTodo = (id) => {
   box-sizing: border-box;
 }
 
+.card-title {
+  font-weight: bold;
+  color: #d63384;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-content .temp {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-content .location {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 4px;
+}
+
 /* 輸入區域適配 */
 .input-section { 
   display: flex; 
@@ -136,7 +157,6 @@ const deleteTodo = (id) => {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  animation: fadeIn 0.3s ease;
 }
 
 .todo-text {
@@ -159,32 +179,21 @@ const deleteTodo = (id) => {
 
 .del-btn { 
   background: none; 
-  border: none; 
-  color: #ffc0cb; 
-  cursor: pointer; 
-  font-size: 1.4rem;
-  padding: 5px 8px;
+  border: none;
+  color: #b0b0b0;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
 }
 
-/* 響應式微調 */
-@media (min-width: 768px) {
-  .cards-wrapper { gap: 24px; }
-  .temp { font-size: 1.4rem; }
+.del-btn:hover {
+  color: #d63384;
 }
 
-@media (max-width: 375px) {
-  .card { padding: 16px; }
-}
-
-/* 標題與文字樣式 */
-.weather-title { color: #f08080; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.temp { font-size: 1.1rem; color: #444; font-weight: 600; }
-.location { font-size: 0.85rem; color: #999; margin-top: 4px; }
-.todo-title { color: #d63384; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-.empty-msg { text-align: center; color: #ccc; font-size: 0.85rem; margin-top: 20px; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.empty-msg {
+  text-align: center;
+  color: #b0b0b0;
+  margin-top: 20px;
+  font-size: 0.9rem;
 }
 </style>

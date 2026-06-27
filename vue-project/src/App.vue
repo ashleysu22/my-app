@@ -80,30 +80,23 @@ const navigate = async (path) => {
 </template>
 
 <style scoped>
-
 /* =========================
-   GLOBAL FIXES (safe scoped)
+   GLOBAL FIXES (Forces background and size to 100%)
 ========================= */
 * {
   box-sizing: border-box;
 }
 
-:global(html, body) {
-  margin: 0;
-  padding: 0;
+:global(html), :global(body) {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #ffeef2 !important; /* Fixes black bar edge backgrounds */
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #ffeef2; /* Match your app's pink background */
-}
-
 
 /* =========================
    DESIGN TOKENS
@@ -118,11 +111,11 @@ html, body {
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  width: 100vw;               /* Forces full width of the screen */
-  min-height: 100vh;          /* Forces full height of the screen */
+  width: 100vw;               
+  min-height: 100vh;          
   margin: 0;
   padding: 0;
-  background-color: #ffeef2;  /* Match your app's background */
+  background-color: #ffeef2;  
   box-sizing: border-box;
 }
 
@@ -137,7 +130,7 @@ html, body {
    HEADER / CONTENT / NAV WIDTH SYSTEM
 ========================= */
 .header, .content, .bottom-nav {
-  width: 100%;                /* Ensures child sections span fully */
+  width: 100%;                
   box-sizing: border-box;
 }
 
@@ -163,6 +156,7 @@ html, body {
   flex: 1;
   margin: 0 auto;
   padding: 0 16px 120px;
+  width: 100%;
 }
 
 /* =========================
@@ -173,17 +167,13 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-
   display: flex;
   justify-content: center;
-
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(15px);
-
   padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
-
   z-index: 2000;
   width: 100%;
 }
@@ -191,6 +181,8 @@ html, body {
 .nav-links {
   display: flex;
   height: 70px;
+  width: 100%;
+  justify-content: space-around;
 }
 
 /* =========================
@@ -307,15 +299,12 @@ html, body {
   left: 0;
   width: 100vw;
   height: 100vh;
-
   background: rgba(253, 240, 246, 0.9);
   backdrop-filter: blur(8px);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   z-index: 9999;
 }
 
