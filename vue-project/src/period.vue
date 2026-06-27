@@ -184,7 +184,6 @@ const formatDate = (date) => {
   margin: 0 auto;   
 }
 
-
 /* Settings Overlay Modals */
 .modal-overlay {
   position: fixed;
