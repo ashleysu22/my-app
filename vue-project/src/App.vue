@@ -25,6 +25,16 @@ const navigate = async (path) => {
 </script>
 
 <template>
+  <!-- 1. The desktop blocker screen (Shows on PCs and Tablets) -->
+  <div class="desktop-blocker">
+    <div class="blocker-content">
+      <span class="blocker-icon">📱</span>
+      <h2>請使用手機瀏覽</h2>
+      <p>為了獲得最佳的心願與經期記錄體驗，請使用行動裝置開啟此頁面。</p>
+    </div>
+  </div>
+
+  <!-- 2. Your core application layout container -->
   <div class="dashboard-container">
 
     <!-- Loading Overlay -->
@@ -81,7 +91,7 @@ const navigate = async (path) => {
 
 <style scoped>
 /* =========================
-   GLOBAL FIXES
+   GLOBAL FIXES (Forces background and size to 100%)
 ========================= */
 * {
   box-sizing: border-box;
@@ -99,19 +109,12 @@ const navigate = async (path) => {
 }
 
 /* =========================
-   DESIGN TOKENS
-========================= */
-:root {
-  --app-max-width: 480px; /* Reduced for better mobile proportion */
-}
-
-/* =========================
    CONTAINER
 ========================= */
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  align-items: center;        /* Centers your content horizontally */
+  align-items: center;        
   width: 100%;               
   min-height: 100vh;          
   margin: 0 auto;
@@ -132,7 +135,7 @@ const navigate = async (path) => {
 ========================= */
 .header, .content, .bottom-nav {
   width: 100%;                
-  max-width: 480px;           /* Prevents cards from spreading too wide */
+  max-width: 480px;           
   box-sizing: border-box;
 }
 
@@ -153,14 +156,12 @@ const navigate = async (path) => {
 /* =========================
    CONTENT
 ========================= */
-/* Update this in App.vue style section */
 .content {
   flex: 1;
   margin: 0 auto;
-  padding: 0 10px 120px; /* Reduced side padding from 16px/20px to 10px */
+  padding: 0 10px 120px; 
   width: 100%;
 }
-
 
 /* =========================
    BOTTOM NAV
@@ -169,7 +170,7 @@ const navigate = async (path) => {
   position: fixed;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%); /* Centers the fixed bottom navigation */
+  transform: translateX(-50%); 
   display: flex;
   justify-content: center;
   background: rgba(255, 255, 255, 0.92);
@@ -179,7 +180,7 @@ const navigate = async (path) => {
   padding-right: env(safe-area-inset-right);
   z-index: 2000;
   width: 100%;
-  border-top-left-radius: 24px;   /* Added premium rounded curves */
+  border-top-left-radius: 24px;   
   border-top-right-radius: 24px;
   box-shadow: 0 -4px 20px rgba(214, 51, 132, 0.06);
 }
@@ -293,5 +294,70 @@ const navigate = async (path) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* =========================
+   MOBILE ONLY ENFORCEMENT SYSTEM
+========================= */
+.desktop-blocker {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffeef2;
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.blocker-content {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 28px;
+  box-shadow: 0 15px 35px rgba(214, 51, 132, 0.08);
+  max-width: 400px;
+}
+
+.blocker-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 16px;
+  animation: heartBeat 2s infinite;
+}
+
+.desktop-blocker h2 {
+  color: #d63384;
+  margin: 0 0 12px 0;
+  font-size: 1.5rem;
+}
+
+.desktop-blocker p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+
+/* Triggers layout blocking screens when view width exceeds 768px */
+@media (min-width: 768px) {
+  .desktop-blocker {
+    display: flex;
+  }
+  .dashboard-container {
+    display: none !important;
+  }
 }
 </style>
