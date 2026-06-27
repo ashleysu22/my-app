@@ -1,26 +1,57 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 const route = useRoute();
 const router = useRouter();
+const isLoading = ref(false);
+
+onMounted(() => {
+  isLoading.value = true;
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1200);
+});
+
+const navigate = async (path) => {
+  if (route.path === path) return;
+
+  isLoading.value = true;
+  await new Promise(resolve => setTimeout(resolve, 900));
+
+  await router.push(path);
+  isLoading.value = false;
+};
 </script>
 
 <template>
   <div class="dashboard-container">
-    <!-- 顶部标题 -->
+
+    <!-- Loading Overlay -->
+    <Transition name="fade">
+      <div v-if="isLoading" class="loading-overlay">
+        <span class="loading-flower">🌸</span>
+        <p class="loading-text">正在祈願...</p>
+      </div>
+    </Transition>
+
+    <!-- Header -->
     <header class="header">
       <h1>心想事成</h1>
     </header>
 
-    <!-- 主内容区 -->
+    <!-- Content -->
     <main class="content">
       <router-view />
     </main>
 
-    <!-- 移动端底部导航 -->
+    <!-- Bottom Nav -->
     <footer class="bottom-nav">
       <nav class="nav-links">
-        <!-- 圣杯 (自定义月牙样式) -->
-        <div class="nav-item" :class="{ active: route.path === '/divination' }" @click="router.push('/divination')">
+
+        <div class="nav-item"
+          :class="{ active: route.path === '/divination' }"
+          @click="navigate('/divination')">
           <div class="jiaobei-icon">
             <span class="moon left"></span>
             <span class="moon right"></span>
@@ -28,81 +59,137 @@ const router = useRouter();
           <span class="label">掷筊</span>
         </div>
 
-        <!-- Home -->
-        <div class="nav-item" :class="{ active: route.path === '/' }" @click="router.push('/')">
+        <div class="nav-item"
+          :class="{ active: route.path === '/' }"
+          @click="navigate('/')">
           <span class="icon">🏠</span>
           <span class="label">首頁</span>
         </div>
 
-        <!-- Cycle -->
-        <div class="nav-item" :class="{ active: route.path === '/period' }" @click="router.push('/period')">
+        <div class="nav-item"
+          :class="{ active: route.path === '/period' }"
+          @click="navigate('/period')">
           <span class="icon">🌸</span>
           <span class="label">例假</span>
         </div>
+
       </nav>
     </footer>
+
   </div>
 </template>
 
 <style scoped>
-/* 1. 基础容器：确保在所有设备上背景和高度正确 */
-.dashboard-container {
-  background-color: #fdf0f6;
-  min-height: 100vh;
-  /* 使用 fill-available 适配移动端浏览器地址栏切换 */
-  min-height: -webkit-fill-available; 
-  display: flex;
-  flex-direction: column;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  overflow-x: hidden; /* 防止横向溢出 */
+
+/* =========================
+   GLOBAL FIXES (safe scoped)
+========================= */
+* {
+  box-sizing: border-box;
 }
 
-/* 2. 顶部标题：响应式字体大小 */
+:global(html, body) {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* =========================
+   DESIGN TOKENS
+========================= */
+:root {
+  --app-max-width: 650px;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.dashboard-container {
+  background-color: #fdf0f6;
+  min-height: 100dvh;
+  min-height: 100vh; /* fallback */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* fallback for old browsers */
+@supports not (height: 100dvh) {
+  .dashboard-container {
+    min-height: 100vh;
+  }
+}
+
+/* =========================
+   HEADER / CONTENT / NAV WIDTH SYSTEM
+========================= */
+.header,
+.content,
+.nav-links {
+  width: 100%;
+  max-width: var(--app-max-width);
+}
+
+/* =========================
+   HEADER
+========================= */
 .header {
   text-align: center;
-  padding: calc(env(safe-area-inset-top) + 10px) 20px 10px;
+  padding: calc(env(safe-area-inset-top) + 20px) 0 10px;
+  margin: 0 auto;
 }
 
 .header h1 {
   color: #d63384;
-  font-size: clamp(1.2rem, 5vw, 1.8rem); /* 随屏幕宽度自动缩放字体 */
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
   margin: 10px 0;
 }
 
-/* 3. 主内容区：核心响应式设计 */
+/* =========================
+   CONTENT
+========================= */
 .content {
   flex: 1;
-  width: 100%;
-  /* 这里的 500px 是手机端最佳宽度，但在平板上我们可以稍稍放宽 */
-  max-width: 650px; 
   margin: 0 auto;
-  padding: 0 16px 120px; /* 底部留够空间给导航栏 */
-  box-sizing: border-box;
+  padding: 0 16px 120px;
 }
 
-/* 4. 底部导航栏：固定高度，适配全面屏 */
+/* =========================
+   BOTTOM NAV
+========================= */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+
+  display: flex;
+  justify-content: center;
+
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px); /* iOS 适配 */
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
-  padding-bottom: env(safe-area-inset-bottom);
+
+  padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+
   z-index: 2000;
-  border-top: 1px solid rgba(214, 51, 132, 0.1);
+  width: 100%;
 }
 
 .nav-links {
   display: flex;
-  height: 70px; /* 稍微增加高度，在大屏上更好点 */
-  align-items: center;
-  max-width: 650px;
-  margin: 0 auto;
+  height: 70px;
 }
 
+/* =========================
+   NAV ITEMS
+========================= */
 .nav-item {
   flex: 1;
   display: flex;
@@ -112,17 +199,16 @@ const router = useRouter();
   cursor: pointer;
   color: #b0b0b0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-tap-highlight-color: transparent; /* 移除移动端点击蓝框 */
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* 5. 交互效果：点击或激活时的状态 */
 .nav-item.active {
   color: #d63384;
   transform: translateY(-2px);
 }
 
 .nav-item:active {
-  transform: scale(0.9); /* 点击时的缩放反馈 */
+  transform: scale(0.9);
 }
 
 .icon {
@@ -136,7 +222,9 @@ const router = useRouter();
   letter-spacing: 0.5px;
 }
 
-/* 6. 特殊图标微调 */
+/* =========================
+   SPECIAL ICON
+========================= */
 .jiaobei-icon {
   display: flex;
   gap: 3px;
@@ -156,30 +244,108 @@ const router = useRouter();
   transform: rotate(10deg);
 }
 
-/* 7. 平板 (Tablet) 及以上设备的特定优化 */
+/* =========================
+   RESPONSIVE
+========================= */
 @media (min-width: 768px) {
   .content {
-    padding-top: 40px; /* 平板上方多留白更显高级 */
+    padding-top: 40px;
   }
-  
+
   .nav-links {
     height: 80px;
   }
-  
+
   .label {
     font-size: 0.85rem;
   }
-  
+
   .icon {
     font-size: 1.6rem;
   }
 }
 
-/* 8. 针对超窄屏幕手机的优化 */
 @media (max-width: 320px) {
+  .nav-item {
+    min-width: 0;
+  }
+
   .label {
-    display: none; /* 极小屏只显示图标 */
+    display: none;
   }
 }
 
+@media (min-width: 1024px) {
+  .dashboard-container {
+    max-width: var(--app-max-width);
+    margin: 0 auto;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+  }
+
+  .bottom-nav {
+    justify-content: center;
+  }
+
+  .nav-links {
+    width: 100%;
+    max-width: var(--app-max-width);
+  }
+}
+
+/* =========================
+   LOADING OVERLAY
+========================= */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(253, 240, 246, 0.9);
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.loading-flower {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  display: inline-block;
+  animation: flower-spin 2s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+.loading-text {
+  color: #d63384;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 1rem;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes flower-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave-to {
+  pointer-events: none;
+}
 </style>
