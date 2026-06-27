@@ -1,9 +1,8 @@
 <template>
   <div class="period-container">
-    <!-- Header with Settings Icon -->
-    <div class="header">
-      <h2>例假</h2>
-      <button class="settings-btn" @click="showSettings = true">⚙️</button>
+    <!-- Header with Settings Icon (Cleaned up layout positioning) -->
+    <div class="calendar-header-actions">
+      <button class="settings-btn" @click="showSettings = true">⚙️ 設定</button>
     </div>
 
     <!-- Calendar View -->
@@ -17,53 +16,47 @@
       />
     </div>
 
-    <!-- 日历组件之后 -->
+    <!-- Reminder Box Context -->
     <div class="reminder-text">
       🌸 記得記錄下妳的經期喔，愛護自己從了解身體開始！
     </div>
 
+    <!-- Settings Popup (Modal) -->
+    <div v-if="showSettings" class="modal-overlay" @click.self="showSettings = false">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>例假设定</h3>
+          <button class="close-icon" @click="showSettings = false">✕</button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="input-group">
+            <label>🌸 上次月經结束時間</label>
+            <input type="date" v-model="settings.lastDate">
+          </div>
 
+          <div class="input-group">
+            <label>⏳ 週期持續時間（天）</label>
+            <input type="number" v-model="settings.duration" min="1" max="10">
+          </div>
 
+          <div class="input-group">
+            <label>🔄 週期長度（天）</label>
+            <input type="number" v-model="settings.cycleLength" min="20" max="45">
+          </div>
+        </div>
 
-
-<!-- Settings Popup (Modal) -->
-<div v-if="showSettings" class="modal-overlay" @click.self="showSettings = false">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>例假设定</h3>
-      <button class="close-icon" @click="showSettings = false">✕</button>
-    </div>
-    
-    <div class="modal-body">
-      <div class="input-group">
-        <label>🌸 上次月經结束時間</label>
-        <input type="date" v-model="settings.lastDate">
+        <div class="modal-actions">
+          <button class="save-btn" @click="showSettings = false">修正</button>
+        </div>
       </div>
-
-      <div class="input-group">
-        <label>⏳ 週期持續時間（天）</label>
-        <input type="number" v-model="settings.duration" min="1" max="10">
-      </div>
-
-      <div class="input-group">
-        <label>🔄 週期長度（天）</label>
-        <input type="number" v-model="settings.cycleLength" min="20" max="45">
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="save-btn" @click="showSettings = false">修正</button>
     </div>
   </div>
-  </div>
-</div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, watch } from 'vue';
 
-const router = useRouter();
 const showSettings = ref(false);
 
 // 1. 初始化设定：优先从 LocalStorage 读取，没有则使用默认值
@@ -104,7 +97,7 @@ const attributes = computed(() => {
 
     periods.push({
       highlight: {
-        color: 'gray', // 历史记录用灰色或淡粉色区别
+        color: 'gray', 
         fillMode: 'light',
         class: 'history-period'
       },
@@ -139,7 +132,6 @@ const attributes = computed(() => {
   
   return periods;
 });
-
 
 const formatDate = (date) => {
   return `${date.getMonth() + 1}月${date.getDate()}日`;
