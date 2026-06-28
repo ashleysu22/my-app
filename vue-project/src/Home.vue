@@ -243,7 +243,7 @@ const sendChatMessage = async (forcedText = '') => {
         <!-- Panel Header -->
         <div class="chat-box-header">
           <div class="chat-header-title">
-            <img src="@/assets/cherry-ai.png" alt="Cherry AI" class="header-avatar-img" />
+            <img src="@/assets/cherry-logo.png" alt="Cherry AI" class="header-avatar-img" />
             祈願小助手
           </div>
           <button class="chat-close-x" @click="isChatOpen = false">✕</button>
