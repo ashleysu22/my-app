@@ -155,6 +155,7 @@ const loadRecommendations = async () => {
         "name": "餐厅名称",
         "type": "美食",
         "rating": 4.5,
+        "image": "https://xxx.com/laksa.jpg",
         "distance": "850m",
         "recommend": ["海南吐司", "半熟蛋"]
       }
@@ -440,25 +441,32 @@ const sendChatMessage = async (forcedText = '') => {
       </div>
 
 
-  <div v-for="place in recommendations" :key="place.name" class="recommend-item">
-  <div class="row">
-    <div class="left">🍜</div>
+      <div v-for="place in recommendations" :key="place.name" class="recommend-item">
 
-    <div class="right">
-      <div class="name" style="color: black;">{{ place.name }}</div>
+        <img
+          :src="place.image"
+          class="place-img"
+          alt="place image"
+        />
 
-      <div class="meta" style="color: black;">
-        ⭐ {{ place.rating || '4.5' }} | 📍 {{ place.distance || '未知' }}
+        <div class="row">
+          <div class="left">🍜</div>
+
+          <div class="right">
+            <div class="name">{{ place.name }}</div>
+
+            <div class="meta">
+              ⭐ {{ place.rating || '4.5' }} | 📍 {{ place.distance || '未知' }}
+            </div>
+
+            <div class="tags">
+              <span v-for="r in place.recommend" :key="r">
+                # {{ r }}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="tags" style="color: black;">
-        <span v-for="r in place.recommend" :key="r">
-          # {{ r }}
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
     </div>
 
     <!-- 1. Round Floating Action Button Icon -->
@@ -1012,4 +1020,11 @@ color: #2b2b2b;}
     font-size:.85rem;
 }
 
+.place-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
 </style>
