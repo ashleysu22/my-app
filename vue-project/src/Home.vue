@@ -250,17 +250,24 @@ const sendChatMessage = async (forcedText = '') => {
         </div>
         
         <!-- 聊天歷史視窗 -->
-        <div class="chat-display-window" ref="chatHistoryRef">
-          <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
-            <div class="avatar-icon">{{ msg.role === 'ai' ? '@/assets/cherry-ai.png' : '🙋🏻‍♀️' }}</div>
-            <div class="message-bubble">
-              {{ msg.text }}
-            </div>
+        <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
+          <div class="avatar-icon">
+            <!-- If the message is from AI, render your custom image asset -->
+            <img v-if="msg.role === 'ai'" src="@/assets/cherry-ai.png" alt="AI" class="chat-avatar-img" />
+            <!-- Otherwise, show the user avatar emoji -->
+            <span v-else>🙋🏻‍♀️</span>
           </div>
+          <div class="message-bubble">
+            {{ msg.text }}
+          </div>
+        </div>
+
           
           <!-- AI 輸入中的動態動效 -->
           <div v-if="isAiTyping" class="message-row ai">
-            <div class="avatar-icon">🌸</div>
+            <div class="avatar-icon">
+              <img src="@/assets/cherry-ai.png" alt="AI" class="chat-avatar-img" />
+            </div>
             <div class="message-bubble typing-dots">
               <span>.</span><span>.</span><span>.</span>
             </div>
