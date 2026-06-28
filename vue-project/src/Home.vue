@@ -272,7 +272,6 @@ const sendChatMessage = async (forcedText = '') => {
               <span>.</span><span>.</span><span>.</span>
             </div>
           </div>
-        </div>
 
         <!-- Horizontal Preset Suggestion Buttons Row -->
         <div class="preset-questions-scroll">
