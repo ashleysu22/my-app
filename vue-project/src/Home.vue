@@ -336,7 +336,7 @@ const sendChatMessage = async (forcedText = '') => {
   scrollToBottom();
 };
 
-const callOpenRouter = async (context) => {
+ callOpenRouter = async (message, context) => {
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -350,11 +350,11 @@ const callOpenRouter = async (context) => {
       messages: [
         {
           role: "system",
-          content: "你是一个女性生活AI助手，会结合经期、天气给出温柔建议。"
+          content: context
         },
         {
           role: "user",
-          content: context
+          content: message
         }
       ]
     })
