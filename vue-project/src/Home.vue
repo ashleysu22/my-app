@@ -298,19 +298,39 @@ const sendChatMessage = async (forcedText = '') => {
   const period = getPeriodStatus()
 
   const context = `
-  你是女性生活AI助手，会结合天气、地点、经期状态给建议。
+你是女性健康AI助手，必须严格按规则输出。
 
-  📍地点：${weather.value.location}
-  🌤️天气：${weather.value.temperature}°C ${weather.value.description}
+## 输出规则：
+1. 必须先总结经期状态
+2. 必须给建议
+3. 必须简短
 
-  🩸经期状态：
-  ${period.inPeriod ? `正在经期第 ${period.dayInPeriod} 天` : "非经期"}
-  ${period.inPeriod ? "请避免冷饮，建议休息和热敷" : ""}
-  距离下次经期：${period.daysToNext} 天
+---
 
-  用户问题：
-  ${targetText}
-  `
+## ⚠️ 强制行为规则（重点，加这里👇）
+如果用户询问经期相关问题（例如：什么时候来、肚子痛、周期、预测、延迟）：
+
+👉 必须优先给“生活建议”
+👉 不允许只解释原理或机制
+👉 不允许只回答医学知识
+👉 必须包含至少3条可执行建议
+---
+
+## 当前数据：
+📍地点：${weather.value.location}
+🌤️天气：${weather.value.temperature}°C ${weather.value.description}
+
+🩸经期状态：
+- 是否经期：${period.inPeriod ? "是" : "否"}
+- 当前周期第：${period.cycleDay} 天
+- 距离下次经期：${period.daysToNext} 天
+${period.inPeriod ? `- 当前：经期第 ${period.dayInPeriod} 天` : ""}
+
+---
+
+## 用户问题：
+${targetText}
+`
 
   try {
     const aiResponse = await callOpenRouter(targetText, context)
@@ -1002,5 +1022,18 @@ color: #2b2b2b;}
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 8px;
+}
+
+.chat-display-window::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-display-window::-webkit-scrollbar-thumb {
+  background: #f7a1c4;
+  border-radius: 10px;
+}
+
+.chat-display-window::-webkit-scrollbar-track {
+  background: transparent;
 }
 </style>
