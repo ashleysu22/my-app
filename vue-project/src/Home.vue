@@ -253,7 +253,7 @@ const sendChatMessage = async (forcedText = '') => {
         <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
           <div class="avatar-icon">
             <!-- If the message is from AI, render your custom image asset -->
-            <img v-if="msg.role === 'ai'" src="@/assets/cherry-ai.png" alt="AI" class="chat-avatar-img" />
+            <img v-if="msg.role === 'ai'" src="@/assets/cherry-ai.png" alt="AI" class="chat-avatar-img" styles="width:10px; height:10px;"/>
             <!-- Otherwise, show the user avatar emoji -->
             <span v-else>🙋🏻‍♀️</span>
           </div>
