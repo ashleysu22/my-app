@@ -160,30 +160,28 @@ const loadRecommendations = async () => {
 `
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+      `https://openrouter.ai/api/v1/chat/completions`,
       {
         method: "POST",
-        headers:{
-          "Content-Type":"application/json"
+        headers: {
+          "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json"
         },
-        body:JSON.stringify({
-          contents:[
-            {
-              parts:[
-                {
-                  text:prompt
-                }
-              ]
-            }
-          ]
-        })
+        body: JSON.stringify({
+        model: "deepseek/deepseek-chat-v3-0324:free",
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }
+        ]
+      })
       }
     )
 
     const data = await response.json()
 
-    let text =
-      data.candidates[0].content.parts[0].text
+    let text = data.choices[0].message.content
 
     text = text
       .replace(/```json/g,"")
