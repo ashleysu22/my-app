@@ -233,7 +233,7 @@ const sendChatMessage = async (forcedText = '') => {
 
     <!-- 1. Round Floating Action Button Icon -->
     <div v-if="!isChatOpen" class="ai-floating-bubble" @click="isChatOpen = true">
-      <span class="bubble-avatar">🤖</span>
+      <img src="@/assets/cherry-ai.png" alt="Cherry AI" class="bubble-avatar-img" />
       <span class="bubble-ping"></span>
     </div>
 
@@ -242,7 +242,10 @@ const sendChatMessage = async (forcedText = '') => {
       <div v-if="isChatOpen" class="floating-chat-box">
         <!-- Panel Header -->
         <div class="chat-box-header">
-          <div class="chat-header-title"><span>🤖</span> 祈願小助手</div>
+          <div class="chat-header-title">
+            <img src="@/assets/cherry-ai.png" alt="Cherry AI" class="header-avatar-img" />
+            祈願小助手
+          </div>
           <button class="chat-close-x" @click="isChatOpen = false">✕</button>
         </div>
         
@@ -329,4 +332,29 @@ const sendChatMessage = async (forcedText = '') => {
   font-size: 1.25rem;
   font-weight: 700;
 color: #2b2b2b;}.card-content .location {font-size: 0.85rem;color: #8e8e8e;margin-top: 6px;}/* 待辦事項輸入與按鈕區域 */.input-section {display: flex;gap: 8px;margin-bottom: 15px;width: 100%;box-sizing: border-box;}.todo-input {flex: 1;min-width: 0;border: 1px solid #fdf0f6;border-radius: 12px;padding: 12px;background: #fffafa;outline: none;font-size: 16px;transition: border-color 0.2s;font-family: inherit;}.todo-input:focus {border-color: #ffb6c1;}.add-btn {background: linear-gradient(135deg, #ff69b4, #d63384);color: white;border: none;border-radius: 14px;width: 52px;min-width: 52px;font-size: 1.6rem;cursor: pointer;display: flex;align-items: center;justify-content: center;}.todo-item {background: #fff;border: 1px solid #fff5f8;margin-top: 10px;padding: 14px 18px;border-radius: 14px;display: flex;justify-content: space-between;align-items: center;box-shadow: 0 2px 8px rgba(0,0,0,0.01);}.todo-text {display: flex;align-items: center;gap: 10px;color: #444;font-weight: 500;overflow: hidden;flex: 1;}.item-text {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}.dot { font-size: 0.9rem; }.del-btn {background: none;border: none;color: #ccc;cursor: pointer;font-size: 1rem;padding: 4px;}.del-btn:hover {color: #d63384;}.empty-msg {text-align: center;color: #b8b8b8;margin-top: 24px;font-size: 0.9rem;}/* ==========================================NEW STYLE SYSTEM: FLOATING CHAT SYSTEM========================================== *//* 1. Round Floating Action Button Icon */.ai-floating-bubble {position: fixed;bottom: 95px;right: 20px;width: 60px;height: 60px;background: linear-gradient(135deg, #ff69b4, #d63384);border-radius: 50%;display: flex;justify-content: center;align-items: center;box-shadow: 0 6px 20px rgba(214, 51, 132, 0.3);cursor: pointer;z-index: 1500;animation: floatUpDown 3s ease-in-out infinite;}.bubble-avatar {font-size: 1.8rem;}.bubble-ping {position: absolute;top: 0;right: 0;width: 14px;height: 14px;background: #4cd964;border: 2px solid white;border-radius: 50%;}@keyframes floatUpDown {0% { transform: translateY(0); }50% { transform: translateY(-6px); }100% { transform: translateY(0); }}/* 2. Overlaid Floating Chat Panel Popup Window container styles */.floating-chat-box {position: fixed;bottom: 85px;right: 16px;left: 16px;max-width: 448px;background: white;border-radius: 24px;padding: 16px;box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);z-index: 1600;border: 1px solid #fff0f3;}/* Fixed broken responsive computer media query braces block */@media (min-width: 768px) {.floating-chat-box {left: auto;width: 380px;}}.chat-box-header {display: flex;justify-content: space-between;align-items: center;margin-bottom: 12px;padding-bottom: 8px;border-bottom: 1px solid #fdf0f6;}.chat-header-title {font-weight: bold;font-size: 1rem;color: #d63384;}.chat-close-x {background: none;border: none;font-size: 1.1rem;color: #bbb;cursor: pointer;padding: 4px;}.chat-close-x:hover {color: #d63384;}/* AI ASSISTANT CHAT DISPLAY BOX */.chat-display-window {height: 240px;overflow-y: auto;border: 1px solid #fdf0f6;border-radius: 16px;padding: 12px;background: #fffbfc;display: flex;flex-direction: column;gap: 12px;margin-bottom: 10px;scroll-behavior: smooth;}.message-row {display: flex;gap: 8px;align-items: flex-start;max-width: 85%;}.message-row.ai {align-self: flex-start;flex-direction: row;}.message-row.user {align-self: flex-end;flex-direction: row-reverse;}.avatar-icon {font-size: 1.2rem;background: white;width: 30px;height: 30px;display: flex;align-items: center;justify-content: center;border-radius: 50%;box-shadow: 0 2px 6px rgba(214, 51, 132, 0.05);}.message-bubble {padding: 10px 14px;border-radius: 16px;font-size: 0.9rem;line-height: 1.4;word-break: break-all;}.ai .message-bubble {background: white;color: #444;border: 1px solid #fdf0f6;border-top-left-radius: 4px;}.user .message-bubble {background: linear-gradient(135deg, #ff7bbd, #d63384);color: white;border-top-right-radius: 4px;}/* Horizontal Presets Custom Rules */.preset-questions-scroll {display: flex;gap: 8px;overflow-x: auto;width: 100%;margin-bottom: 12px;padding: 2px 0 6px 0;-webkit-overflow-scrolling: touch;}.preset-questions-scroll::-webkit-scrollbar {display: none;}.preset-badge {flex-shrink: 0;background: #fff5f7;border: 1px solid #ffe1e7;color: #d63384;padding: 8px 12px;border-radius: 20px;font-size: 0.8rem;font-weight: 500;cursor: pointer;transition: all 0.2s ease;font-family: inherit;}.preset-badge:active {transform: scale(0.95);background: #ffe1e7;}.preset-badge:disabled {opacity: 0.5;cursor: not-allowed;}/* Chat Field Input controls layout setup */.chat-input-section {display: flex;gap: 8px;width: 100%;}.chat-field {flex: 1;min-width: 0;border: 1px solid #fdf0f6;border-radius: 12px;padding: 12px;background: #fffafa;outline: none;font-size: 14px;font-family: inherit;}.chat-field:focus {border-color: #ffb6c1;}.chat-send-btn {background: #ffe6eb;color: #d63384;border: 1px solid #fbcad5;border-radius: 12px;padding: 0 16px;font-weight: 600;font-size: 0.9rem;cursor: pointer;transition: all 0.2s;}.chat-send-btn:active {transform: scale(0.95);}.chat-send-btn:disabled {opacity: 0.6;cursor: not-allowed;}/* Loading animations */.typing-dots span {animation: blink 1.4s infinite both;font-weight: bold;font-size: 1.2rem;}.typing-dots span:nth-child(2) { animation-delay: .2s; }.typing-dots span:nth-child(3) { animation-delay: .4s; }@keyframes blink {0% { opacity: .2; }20% { opacity: 1; }100% { opacity: .2; }}/* Transition Animations for opening/closing the chat box popup window */.slide-fade-enter-active {transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);}.slide-fade-leave-active {transition: all 0.25s cubic-bezier(0.7, 0, 0.84, 0);}.slide-fade-enter-from,.slide-fade-leave-to {transform: translateY(20px) scale(0.95);opacity: 0;}
+
+.bubble-avatar-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  pointer-events: none; /* Prevents long-press drag bugs on mobile phones */
+}
+
+.header-avatar-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+/* Update this existing rule to keep the items inside the title row centered */
+.chat-header-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #d63384;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 </style>
