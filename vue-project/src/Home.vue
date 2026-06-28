@@ -41,7 +41,7 @@ const preQuestions = ref([
 ]);
 
 const chatMessages = ref([
-  { id: 1, role: 'ai', text: '你好！我是妳的心願陪護小助手 🌸 隨時可以和我聊聊妳的今日心情、願望，或點擊下方快捷鍵向我提問喔！' }
+  { id: 1, role: 'ai', text: '你好！我是妳的小助手阿比 🌸 隨時可以和我聊聊妳的今日心情、願望，或點擊下方快捷鍵向我提問喔！' }
 ]);
 
 // Cleaned 100 offline responses (Fixed formatting strings)
@@ -244,7 +244,7 @@ const sendChatMessage = async (forcedText = '') => {
         <div class="chat-box-header">
           <div class="chat-header-title">
             <img src="@/assets/cherry-logo.png" alt="Cherry AI" class="header-avatar-img" />
-            祈願小助手
+            小助手
           </div>
           <button class="chat-close-x" @click="isChatOpen = false">✕</button>
         </div>
@@ -252,7 +252,7 @@ const sendChatMessage = async (forcedText = '') => {
         <!-- 聊天歷史視窗 -->
         <div class="chat-display-window" ref="chatHistoryRef">
           <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
-            <div class="avatar-icon">{{ msg.role === 'ai' ? '🌸' : '🙋🏻‍♀️' }}</div>
+            <div class="avatar-icon">{{ msg.role === 'ai' ? '@/assets/cherry-ai.png' : '🙋🏻‍♀️' }}</div>
             <div class="message-bubble">
               {{ msg.text }}
             </div>
