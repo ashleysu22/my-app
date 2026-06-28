@@ -134,73 +134,84 @@ const recommendations = ref([])
 const loadingRecommend = ref(false)
 
 const loadRecommendations = async () => {
-
   loadingRecommend.value = true
 
   try {
-
     const city = weather.value.location
 
-    const prompt = 
-    `你是一位旅遊導遊。
-
-    請推薦 ${city} 附近：
-
-    1. 三間美食
-    2. 三個景點
-
-    只回答 JSON：
-
-    [
-    {
-    "name":"xxx",
-    "type":"美食"
+    if (!city || city === '...' || city === '未知位置') {
+      throw new Error('City not ready yet')
     }
-    ]
-    `
+
+    const prompt = `
+你是一位旅遊導遊。
+
+請推薦 ${city} 附近：
+
+1. 三間美食
+2. 三個景點
+
+只輸出「合法 JSON」，不要任何文字、不要 markdown。
+
+格式：
+[
+  { "name": "xxx", "type": "美食" },
+  { "name": "xxx", "type": "景點" }
+]
+`
 
     const response = await fetch(
-      `https://openrouter.ai/api/v1/chat/completions`,
+      "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "HTTP-Referer": "http://localhost",
+          "X-Title": "Vue App"
         },
         body: JSON.stringify({
-        model: "deepseek/deepseek-chat-v3-0324:free",
-        messages: [
-          {
-            role: "user",
-            content: prompt
-          }
-        ]
-      })
+          model: "openai/gpt-4o-mini",
+          messages: [
+            { role: "user", content: prompt }
+          ],
+          temperature: 0.7
+        })
       }
     )
-    console.log(import.meta.env.VITE_OPENROUTER_API_KEY)
+
+    // ❗ 关键防炸点
+    if (!response.ok) {
+      const errText = await response.text()
+      throw new Error("OpenRouter Error: " + errText)
+    }
 
     const data = await response.json()
 
-    let text = data.choices[0].message.content
+    const content = data?.choices?.[0]?.message?.content
 
-    try {
-      text = text.replace(/```json/g,"").replace(/```/g,"").trim()
-      const parsed = JSON.parse(text)
-      recommendations.value = parsed
-    } catch (e) {
-      console.error("JSON parse failed:", text)
+    if (!content) {
+      throw new Error("No content returned from API")
     }
 
-  }
-  catch(err){
+    let text = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim()
 
-    console.log(err)
+    try {
+      recommendations.value = JSON.parse(text)
+    } catch (e) {
+      console.error("JSON parse failed:", text)
+      recommendations.value = []
+    }
 
+  } catch (err) {
+    console.error("loadRecommendations failed:", err)
+    recommendations.value = []
   }
 
   loadingRecommend.value = false
-
 }
 
 
