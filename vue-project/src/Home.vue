@@ -226,11 +226,7 @@ const userInput = ref('');
 const isAiTyping = ref(false);
 const chatHistoryRef = ref(null);
 
-settings = {
-  lastDate,
-  duration,
-  cycleLength
-}
+const settings = ref(JSON.parse(localStorage.getItem('periodSettings')) || {})
 
 const getPeriodData = () => {
   return JSON.parse(localStorage.getItem('periodSettings')) || {
@@ -241,19 +237,19 @@ const getPeriodData = () => {
 }
 
 const getPeriodStatus = () => {
-  const s = getPeriodData()
+  const settings = JSON.parse(localStorage.getItem('periodSettings')) || {}
 
-  if (!s.lastDate) {
+  if (!settings.lastDate) {
     return { inPeriod: false }
   }
 
   const today = new Date()
-  const [y, m, d] = s.lastDate.split('-').map(Number)
+  const [y, m, d] = settings.lastDate.split('-').map(Number)
   const last = new Date(y, m - 1, d)
 
   const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24))
-  const cycle = Number(s.cycleLength || 28)
-  const duration = Number(s.duration || 5)
+  const cycle = Number(settings.cycleLength || 28)
+  const duration = Number(settings.duration || 5)
 
   const cycleDay = diffDays % cycle
   const inPeriod = cycleDay >= 0 && cycleDay < duration
@@ -261,8 +257,8 @@ const getPeriodStatus = () => {
   return {
     inPeriod,
     cycleDay,
-    daysToNext: cycle - cycleDay,
-    dayInPeriod: inPeriod ? cycleDay + 1 : null
+    dayInPeriod: inPeriod ? cycleDay + 1 : null,
+    daysToNext: cycle - cycleDay
   }
 }
 
