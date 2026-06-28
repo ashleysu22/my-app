@@ -76,6 +76,9 @@ const loadWeather = () => {
 
         const weatherData = await weatherRes.json()
 
+        console.log(weatherRes.status)
+
+
         const geoRes = await fetch(
           `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=zh`
         )
