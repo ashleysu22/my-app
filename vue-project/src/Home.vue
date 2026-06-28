@@ -233,7 +233,8 @@ const sendChatMessage = async (forcedText = '') => {
 
     <!-- 1. Round Floating Action Button Icon -->
     <div v-if="!isChatOpen" class="ai-floating-bubble" @click="isChatOpen = true">
-      <img src="@/assets/cherry-ai.png" alt="Cherry AI" class="bubble-avatar-img" />
+      <!--<img src="@/assets/cherry-ai.png" alt="Cherry AI" class="bubble-avatar-img" />-->
+      <span class="bubble-avatar-img">🌸</span>
       <span class="bubble-ping"></span>
     </div>
 
