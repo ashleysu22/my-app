@@ -432,7 +432,7 @@ const sendChatMessage = async (forcedText = '') => {
     <!-- 推薦卡片 -->
     <div class="card recommend-card">
       <div class="card-title logo wenkai">
-        🍜 附近推薦
+        ⭐ 附近推薦
       </div>
 
       <div v-if="loadingRecommend">
@@ -445,13 +445,13 @@ const sendChatMessage = async (forcedText = '') => {
     <div class="left">🍜</div>
 
     <div class="right">
-      <div class="name">{{ place.name }}</div>
+      <div class="name" styles="color:black;">{{ place.name }}</div>
 
-      <div class="meta">
+      <div class="meta" styles="color:black;">
         ⭐ {{ place.rating || '4.5' }} | 📍 {{ place.distance || '未知' }}
       </div>
 
-      <div class="tags">
+      <div class="tags" styles="color:black;">
         <span v-for="r in place.recommend" :key="r">
           # {{ r }}
         </span>
