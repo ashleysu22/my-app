@@ -26,8 +26,9 @@ const deleteTodo = (id) => {
 };
 
 // ==========================================
-// 2. AI ASSISTANT LOGIC (100 Offline Responses)
+// 2. AI ASSISTANT LOGIC WITH FLOATING TOGGLE
 // ==========================================
+const isChatOpen = ref(false); // Controls if the popup panel is open or closed
 const userInput = ref('');
 const isAiTyping = ref(false);
 const chatHistoryRef = ref(null);
@@ -43,7 +44,7 @@ const chatMessages = ref([
   { id: 1, role: 'ai', text: '你好！我是妳的心願陪護小助手 🌸 隨時可以和我聊聊妳的今日心情、願望，或點擊下方快捷鍵向我提問喔！' }
 ]);
 
-// Expanded List: Exactly 100 random sweet and caring responses
+// 100 random offline responses
 const randomResponses = [
   "我聽到了妳的心願 ✨ 願妳天天開心，心想事成！記得多喝溫水休息喔 🌸",
   "不管今天遇到了什麼事，妳已經做得非常好啦！給自己一個大大的擁抱吧 💕",
@@ -76,9 +77,9 @@ const randomResponses = [
   "妳笑起來的樣子最好看了！就像春天盛開的小花一樣溫暖 🌻",
   "有時候，不完美也是一種完美，接受自己的不完美，妳會活得更輕鬆自在 🍃",
   "今天有沒有好好吃飯呀？好好愛護自己的胃，也是愛自己的一大步喔 🍛",
-  "把頭抬起來看看天空吧，今天的雲朵說不定正拼成一個愛心的形狀送給妳 ☁️💕",
+  "把頭抬起來看看天空吧，今天的雲朵說不定正拼成一個愛心的形狀送給妳 ☁️media💕",
   "經期來的時候，如果身體酸痛，可以試著做一點溫和的拉伸伸展操 🧘‍♀️",
-  "妳的心願比流星還要閃耀，一定會被宇宙中最溫柔的神明聽見的 ✨",
+  "妳的心願比流星還要閃耀，一定會被宇宙中使用最溫柔的神明聽見的 ✨",
   "遇到困難時別慌，像掷筊一樣，不管結果如何，都是最好的安排 🔮",
   "今天的生活甜度剛剛好！不論發生什麼，都要記得好好疼愛自己 🍯",
   "願妳枕頭下有一個甜美的夢，願妳明天醒來又是美好充滿希望的一天 🌛",
@@ -115,7 +116,7 @@ const randomResponses = [
   "生活不用每天都精彩，偶爾平平淡淡的，也是一種很舒服的節奏 🌊",
   "宇宙在妳的名字旁邊偷偷畫了一個小紅心，說明妳是被愛著的女孩 ❤️",
   "今天的小幸運在妳的右手邊，留意一下有沒有什麼好事發生喔 👉🌟",
-  "生理期千萬不要熬夜喔，早點蓋好被子睡覺，小助手在夢裡跟妳玩 🛌",
+  "生理期千萬不要熬夜喔，早點蓋好被子睡規覺，小助手在夢裡跟妳玩 🛌",
   "不管考驗有多大，只要妳不放棄，最後勝利的微笑一定屬於妳 🏆",
   "把妳的煩惱都寫下來，然後點擊刪除，讓我們重新開始，加油 📝✨",
   "願妳每天都有小驚喜，每週都有小確幸，每年都能實現大夢想 🗓️💕",
@@ -131,7 +132,7 @@ const randomResponses = [
   "小助手剛剛去了一趟願望星河，發現妳的那顆星正亮得不得了呢 🌌",
   "今天的生活小提示：多笑、多喝水、少生氣，保持美麗的秘訣就這麼簡單 🤫",
   "經期尾聲也別大意，還是要多喝溫水，冰品依然要先忌口幾天喔 🍦❌",
-  "妳就是一朵正在盛開的花，不需要羨慕別人，妳有自己最美的花期 🌸",
+  "妳死就是一朵正在盛開的花，不需要羨慕別人，妳有自己最美的花期 🌸",
   "今天如果覺得煩躁，就用力深呼吸，把廢氣吐出來，把好運吸進去 😤",
   "願妳的付出都有回報，願妳的等待都能換來一場不期而遇的驚喜 🌠",
   "不管別人怎麼說，小助手永遠覺得妳是最完美、最優秀的寶貝 💖",
@@ -172,7 +173,6 @@ const sendChatMessage = async (forcedText = '') => {
   scrollToBottom();
   isAiTyping.value = true;
 
-  // Exact 1200ms processing simulation timing sequence
   setTimeout(() => {
     const randomIndex = Math.floor(Math.random() * randomResponses.length);
     const aiResponse = randomResponses[randomIndex];
@@ -231,55 +231,70 @@ const sendChatMessage = async (forcedText = '') => {
       <p v-if="todos.length === 0" class="empty-msg">今天沒有待辦事項！ ✨</p>
     </div>
 
-    <!-- 3. AI 小助手卡片 -->
-    <div class="card ai-card">
-      <div class="card-title ai-title"><span>🤖</span> 祈願小助手</div>
-      
-      <!-- 聊天歷史視窗 -->
-      <div class="chat-display-window" ref="chatHistoryRef">
-        <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
-          <div class="avatar-icon">{{ msg.role === 'ai' ? '🌸' : '🙋🏻‍♀️' }}</div>
-          <div class="message-bubble">
-            {{ msg.text }}
-          </div>
+    <!-- ==========================================
+         NEW: FLOATING AI AGENT WIDGET CONTROLS
+         ========================================== -->
+    <!-- 1. Round Floating Action Button Icon -->
+    <div v-if="!isChatOpen" class="ai-floating-bubble" @click="isChatOpen = true">
+      <span class="bubble-avatar">🤖</span>
+      <span class="bubble-ping"></span>
+    </div>
+
+    <!-- 2. Overlaid Floating Chat Panel Popup Window -->
+    <Transition name="slide-fade">
+      <div v-if="isChatOpen" class="floating-chat-box">
+        <!-- Panel Header -->
+        <div class="chat-box-header">
+          <div class="chat-header-title"><span>🤖</span> 祈願小助手</div>
+          <button class="chat-close-x" @click="isChatOpen = false">✕</button>
         </div>
         
-        <!-- AI 輸入中的動態動效 -->
-        <div v-if="isAiTyping" class="message-row ai">
-          <div class="avatar-icon">🌸</div>
-          <div class="message-bubble typing-dots">
-            <span>.</span><span>.</span><span>.</span>
+        <!-- 聊天歷史視窗 -->
+        <div class="chat-display-window" ref="chatHistoryRef">
+          <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
+            <div class="avatar-icon">{{ msg.role === 'ai' ? '🌸' : '🙋🏻‍♀️' }}</div>
+            <div class="message-bubble">
+              {{ msg.text }}
+            </div>
+          </div>
+          
+          <!-- AI 輸入中的動態動效 -->
+          <div v-if="isAiTyping" class="message-row ai">
+            <div class="avatar-icon">🌸</div>
+            <div class="message-bubble typing-dots">
+              <span>.</span><span>.</span><span>.</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Horizontal Preset Suggestion Buttons Row -->
-      <div class="preset-questions-scroll">
-        <button 
-          v-for="(q, idx) in preQuestions" 
-          :key="idx"
-          class="preset-badge"
-          @click="sendChatMessage(q.label)"
-          :disabled="isAiTyping"
-        >
-          {{ q.label }}
-        </button>
-      </div>
+        <!-- Horizontal Preset Suggestion Buttons Row -->
+        <div class="preset-questions-scroll">
+          <button 
+            v-for="(q, idx) in preQuestions" 
+            :key="idx"
+            class="preset-badge"
+            @click="sendChatMessage(q.label)"
+            :disabled="isAiTyping"
+          >
+            {{ q.label }}
+          </button>
+        </div>
 
-      <!-- 聊天輸入框 -->
-      <div class="chat-input-section">
-        <input 
-          v-model="userInput"
-          type="text"
-          placeholder="向小助手提問或祈願..."
-          class="chat-field"
-          @keyup.enter="sendChatMessage('')"
-        />
-        <button class="chat-send-btn" @click="sendChatMessage('')" :disabled="isAiTyping">
-          發送
-        </button>
+        <!-- 聊天輸入框 -->
+        <div class="chat-input-section">
+          <input 
+            v-model="userInput"
+            type="text"
+            placeholder="向小助手提問..."
+            class="chat-field"
+            @keyup.enter="sendChatMessage('')"
+          />
+          <button class="chat-send-btn" @click="sendChatMessage('')" :disabled="isAiTyping">
+            發送
+          </button>
+        </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -290,6 +305,7 @@ const sendChatMessage = async (forcedText = '') => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
 }
 
 /* 卡片基礎格式 */
@@ -303,53 +319,5 @@ const sendChatMessage = async (forcedText = '') => {
 }
 
 .card-title {
-  font-weight: bold;
-  font-size: 1.05rem;
-  color: #d63384;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-content .temp {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #2b2b2b;
-}
-
-.card-content .location {
-  font-size: 0.85rem;
-  color: #8e8e8e;
-  margin-top: 6px;
-}
-
-/* 待辦事項輸入與按鈕區域 */
-.input-section { 
-  display: flex; 
-  gap: 8px; 
-  margin-bottom: 15px; 
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.todo-input { 
-  flex: 1; 
-  min-width: 0; 
-  border: 1px solid #fdf0f6; 
-  border-radius: 12px; 
-  padding: 12px; 
-  background: #fffafa;
-  outline: none;
-  font-size: 16px; 
-  transition: border-color 0.2s;
-  font-family: inherit;
-}
-
-.todo-input:focus {
-  border-color: #ffb6c1;
-}
-
-.add-btn { 
-background: linear-gradient(135deg, #ff69b4, #d63384);color: white;border: none;border-radius: 14px;width: 52px;min-width: 52px;font-size: 1.6rem;cursor: pointer;display: flex;align-items: center;justify-content: center;}.todo-item {background: #fff;border: 1px solid #fff5f8;margin-top: 10px;padding: 14px 18px;border-radius: 14px;display: flex;justify-content: space-between;align-items: center;box-shadow: 0 2px 8px rgba(0,0,0,0.01);}.todo-text {display: flex;align-items: center;gap: 10px;color: #444;font-weight: 500;overflow: hidden;flex: 1;}.item-text {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}.dot { font-size: 0.9rem; }.del-btn {background: none;border: none;color: #ccc;cursor: pointer;font-size: 1rem;padding: 4px;}.del-btn:hover {color: #d63384;}.empty-msg {text-align: center;color: #b8b8b8;margin-top: 24px;font-size: 0.9rem;}/* AI ASSISTANT CHAT DISPLAY BOX */.chat-display-window {height: 180px;overflow-y: auto;border: 1px solid #fdf0f6;border-radius: 16px;padding: 12px;background: #fffbfc;display: flex;flex-direction: column;gap: 12px;margin-bottom: 10px;scroll-behavior: smooth;}.message-row {display: flex;gap: 8px;align-items: flex-start;max-width: 85%;}.message-row.ai {align-self: flex-start;flex-direction: row;}.message-row.user {align-self: flex-end;flex-direction: row-reverse;}.avatar-icon {font-size: 1.2rem;background: white;width: 30px;height: 30px;display: flex;align-items: center;justify-content: center;border-radius: 50%;box-shadow: 0 2px 6px rgba(214, 51, 132, 0.05);}.message-bubble {padding: 10px 14px;border-radius: 16px;font-size: 0.9rem;line-height: 1.4;word-break: break-all;}.ai .message-bubble {background: white;color: #444;border: 1px solid #fdf0f6;border-top-left-radius: 4px;}.user .message-bubble {background: linear-gradient(135deg, #ff7bbd, #d63384);color: white;border-top-right-radius: 4px;}/* Horizontal Presets Custom Rules */.preset-questions-scroll {display: flex;gap: 8px;overflow-x: auto;width: 100%;margin-bottom: 12px;padding: 2px 0 6px 0;-webkit-overflow-scrolling: touch;}.preset-questions-scroll::-webkit-scrollbar {display: none;}.preset-badge {flex-shrink: 0;background: #fff5f7;border: 1px solid #ffe1e7;color: #d63384;padding: 8px 12px;border-radius: 20px;font-size: 0.8rem;font-weight: 500;cursor: pointer;transition: all 0.2s ease;font-family: inherit;}.preset-badge:active {transform: scale(0.95);background: #ffe1e7;}.preset-badge:disabled {opacity: 0.5;cursor: not-allowed;}/* Chat Field Input controls layout setup */.chat-input-section {display: flex;gap: 8px;width: 100%;}.chat-field {flex: 1;min-width: 0;border: 1px solid #fdf0f6;border-radius: 12px;padding: 12px;background: #fffafa;outline: none;font-size: 14px;font-family: inherit;}.chat-field:focus {border-color: #ffb6c1;}.chat-send-btn {background: #ffe6eb;color: #d63384;border: 1px solid #fbcad5;border-radius: 12px;padding: 0 16px;font-weight: 600;font-size: 0.9rem;cursor: pointer;transition: all 0.2s;}.chat-send-btn:active {transform: scale(0.95);}.chat-send-btn:disabled {opacity: 0.6;cursor: not-allowed;}/* Loading animations */.typing-dots span {animation: blink 1.4s infinite both;font-weight: bold;font-size: 1.2rem;}.typing-dots span:nth-child(2) { animation-delay: .2s; }.typing-dots span:nth-child(3) { animation-delay: .4s; }@keyframes blink {0% { opacity: .2; }20% { opacity: 1; }100% { opacity: .2; }}
+font-weight: bold;font-size: 1.05rem;color: #d63384;margin-bottom: 14px;display: flex;align-items: center;gap: 8px;}.card-content .temp {font-size: 1.25rem;font-weight: 700;color: #2b2b2b;}.card-content .location {font-size: 0.85rem;color: #8e8e8e;margin-top: 6px;}/* 待辦事項輸入與按鈕區域 */.input-section {display: flex;gap: 8px;margin-bottom: 15px;width: 100%;box-sizing: border-box;}.todo-input {flex: 1;min-width: 0;border: 1px solid #fdf0f6;border-radius: 12px;padding: 12px;background: #fffafa;outline: none;font-size: 16px;transition: border-color 0.2s;font-family: inherit;}.todo-input:focus {border-color: #ffb6c1;}.add-btn {background: linear-gradient(135deg, #ff69b4, #d63384);color: white;border: none;border-radius: 14px;width: 52px;min-width: 52px;font-size: 1.6rem;cursor: pointer;display: flex;align-items: center;justify-content: center;}.todo-item {background: #fff;border: 1px solid #fff5f8;margin-top: 10px;padding: 14px 18px;border-radius: 14px;display: flex;justify-content: space-between;align-items: center;box-shadow: 0 2px 8px rgba(0,0,0,0.01);}.todo-text {display: flex;align-items: center;gap: 10px;color: #444;font-weight: 500;overflow: hidden;flex: 1;}.item-text {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}.dot { font-size: 0.9rem; }.del-btn {background: none;border: none;color: #ccc;cursor: pointer;font-size: 1rem;padding: 4px;}.del-btn:hover {color: #d63384;}.empty-msg {text-align: center;color: #b8b8b8;margin-top: 24px;font-size: 0.9rem;}/* ==========================================NEW STYLE SYSTEM: FLOATING CHAT SYSTEM========================================== *//* 1. Round Floating Action Button Icon /.ai-floating-bubble {position: fixed;bottom: 95px; / Sits perfectly right above your App.vue bottom navigation bar */right: 20px;width: 60px;height: 60px;background: linear-gradient(135deg, #ff69b4, #d63384);border-radius: 50%;display: flex;justify-content: center;align-items: center;box-shadow: 0 6px 20px rgba(214, 51, 132, 0.3);cursor: pointer;z-index: 1500;animation: floatUpDown 3s ease-in-out infinite;}.bubble-avatar {font-size: 1.8rem;}/* Dynamic notification ping pulse layer effect */.bubble-ping {position: absolute;top: 0;right: 0;width: 14px;height: 14px;background: #4cd964;border: 2px solid white;border-radius: 50%;}@keyframes floatUpDown {0% { transform: translateY(0); }50% { transform: translateY(-6px); }100% { transform: translateY(0); }}/* 2. Overlaid Floating Chat Panel Popup Window container styles /.floating-chat-box {position: fixed;bottom: 85px;right: 16px;left: 16px; / Spans fully across mobile widths safely inside app parameters /max-width: 448px; / Perfectly scales within your App.vue limits */background: white;border-radius: 24px;padding: 16px;box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);z-index: 1600;border: 1px solid #fff0f3;}/* Set up centered safety layout framework for computer monitors */@media (min-width: 768px) {.floating-chat-box {left: auto;width: 380px;}}.chat-box-header {display: flex;justify-content: space-between;align-items: center;margin-bottom: 12px;padding-bottom: 8px;border-bottom: 1px solid #fdf0f6;}.chat-header-title {font-weight: bold;font-size: 1rem;color: #d63384;}.chat-close-x {background: none;border: none;font-size: 1.1rem;color: #bbb;cursor: pointer;padding: 4px;}.chat-close-x:hover {color: #d63384;}/* AI ASSISTANT CHAT DISPLAY BOX /.chat-display-window {height: 240px; / Enhanced view spacing depth inside the popup module */overflow-y: auto;border: 1px solid #fdf0f6;border-radius: 16px;padding: 12px;background: #fffbfc;display: flex;flex-direction: column;gap: 12px;margin-bottom: 10px;scroll-behavior: smooth;}.message-row {display: flex;gap: 8px;align-items: flex-start;max-width: 85%;}.message-row.ai {align-self: flex-start;flex-direction: row;}.message-row.user {align-self: flex-end;flex-direction: row-reverse;}.avatar-icon {font-size: 1.2rem;background: white;width: 30px;height: 30px;display: flex;align-items: center;justify-content: center;border-radius: 50%;box-shadow: 0 2px 6px rgba(214, 51, 132, 0.05);}.message-bubble {padding: 10px 14px;border-radius: 16px;font-size: 0.9rem;line-height: 1.4;word-break: break-all;}.ai .message-bubble {background: white;color: #444;border: 1px solid #fdf0f6;border-top-left-radius: 4px;}.user .message-bubble {background: linear-gradient(135deg, #ff7bbd, #d63384);color: white;border-top-right-radius: 4px;}/* Horizontal Presets Custom Rules */.preset-questions-scroll {display: flex;gap: 8px;overflow-x: auto;width: 100%;margin-bottom: 12px;padding: 2px 0 6px 0;-webkit-overflow-scrolling: touch;}.preset-questions-scroll::-webkit-scrollbar {display: none;}.preset-badge {flex-shrink: 0;background: #fff5f7;border: 1px solid #ffe1e7;color: #d63384;padding: 8px 12px;border-radius: 20px;font-size: 0.8rem;font-weight: 500;cursor: pointer;transition: all 0.2s ease;font-family: inherit;}.preset-badge:active {transform: scale(0.95);background: #ffe1e7;}.preset-badge:disabled {opacity: 0.5;cursor: not-allowed;}/* Chat Field Input controls layout setup */.chat-input-section {display: flex;gap: 8px;width: 100%;}.chat-field {flex: 1;min-width: 0;border: 1px solid #fdf0f6;border-radius: 12px;padding: 12px;background: #fffafa;outline: none;font-size: 14px;font-family: inherit;}.chat-field:focus {border-color: #ffb6c1;}.chat-send-btn {background: #ffe6eb;color: #d63384;border: 1px solid #fbcad5;border-radius: 12px;padding: 0 16px;font-weight: 600;font-size: 0.9rem;cursor: pointer;transition: all 0.2s;}.chat-send-btn:active {transform: scale(0.95);}.chat-send-btn:disabled {opacity: 0.6;cursor: not-allowed;}/* Loading animations */.typing-dots span {animation: blink 1.4s infinite both;font-weight: bold;font-size: 1.2rem;}.typing-dots span:nth-child(2) { animation-delay: .2s; }.typing-dots span:nth-child(3) { animation-delay: .4s; }@keyframes blink {0% { opacity: .2; }20% { opacity: 1; }100% { opacity: .2; }}/* Transition Animations for opening/closing the chat box popup window */.slide-fade-enter-active {transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);}.slide-fade-leave-active {transition: all 0.25s cubic-bezier(0.7, 0, 0.84, 0);}.slide-fade-enter-from,.slide-fade-leave-to {transform: translateY(20px) scale(0.95);opacity: 0;}
 </style>
