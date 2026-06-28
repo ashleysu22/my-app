@@ -155,7 +155,6 @@ const loadRecommendations = async () => {
         "name": "餐厅名称",
         "type": "美食",
         "rating": 4.5,
-        "image": "https://xxx.com/laksa.jpg",
         "distance": "850m",
         "recommend": ["海南吐司", "半熟蛋"]
       }
@@ -441,17 +440,9 @@ const sendChatMessage = async (forcedText = '') => {
       </div>
 
 
-      <div v-for="place in recommendations" :key="place.name" class="recommend-item">
-
-        <img
-          :src="place.image"
-          class="place-img"
-          alt="place image"
-        />
-
+      <div v-for="place in recommendations" :key="place.name" class="recommend-item" style="color: black;">
         <div class="row">
           <div class="left">🍜</div>
-
           <div class="right">
             <div class="name">{{ place.name }}</div>
 
