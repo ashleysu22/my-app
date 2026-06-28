@@ -41,13 +41,15 @@ const navigate = async (path) => {
     <Transition name="fade">
       <div v-if="isLoading" class="loading-overlay">
         <span class="loading-flower">🌸</span>
-        <p class="loading-text">正在祈願...</p>
+        <p class="loading-text">加载中。。。</p>
       </div>
     </Transition>
 
     <!-- Header -->
     <header class="header">
-      <h1>心想事成</h1>
+      <div class="logo wenkai">
+        <h1>微棠花语</h1>
+      </div>
     </header>
 
     <!-- Content -->

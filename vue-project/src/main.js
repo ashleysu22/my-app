@@ -8,6 +8,8 @@ import 'v-calendar/style.css';
 
 // 2. Import your Router
 import { router } from './router' 
+import './assets/styles/fonts.css'
+
 
 const app = createApp(App)
 

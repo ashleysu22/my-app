@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "WenKai";
+  src: url("../fonts/LXGWWenKai-Regular.ttf") format("truetype");
+}
+
+.logo {
+  font-family: "WenKai";
+}
