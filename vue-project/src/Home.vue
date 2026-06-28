@@ -462,17 +462,18 @@ const callOpenRouter = async (message, context) => {
         </div>
         
         <!-- 聊天歷史視窗 -->
+        <div class="chat-display-window" ref="chatHistoryRef">
         <div v-for="msg in chatMessages" :key="msg.id" :class="['message-row', msg.role]">
           <div class="avatar-icon">
-            <!-- If the message is from AI, render your custom image asset -->
-            <img v-if="msg.role === 'ai'" src="@/assets/cherry-ai.png" alt="AI" class="chat-avatar-img"/>
-            <!-- Otherwise, show the user avatar emoji -->
+            <img v-if="msg.role === 'ai'" src="@/assets/cherry-ai.png" class="chat-avatar-img"/>
             <span v-else>🙋🏻‍♀️</span>
           </div>
+
           <div class="message-bubble">
             {{ msg.text }}
           </div>
         </div>
+      </div>
 
           
           <!-- AI 輸入中的動態動效 -->
@@ -752,16 +753,17 @@ color: #2b2b2b;}
    AI ASSISTANT CHAT DISPLAY BOX
    ========================================================================== */
 .chat-display-window {
-  height: 240px;
-  overflow-y: auto;
-  border: 1px solid #fdf0f6;
-  border-radius: 16px;
+  height: 260px;        /* 控制聊天窗口高度 */
+  overflow-y: auto;     /* 开启滚动 */
   padding: 12px;
-  background: #fffbfc;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 10px;
+
+  border: 1px solid #fdf0f6;
+  border-radius: 16px;
+  background: #fffbfc;
+
   scroll-behavior: smooth;
 }
 
