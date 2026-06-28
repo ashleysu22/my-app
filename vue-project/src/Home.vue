@@ -110,17 +110,6 @@ onMounted(() => {
   loadWeather()
 })
 
-if (!weatherRes.ok) {
-  throw new Error("Weather API failed")
-}
-
-const weatherData = await weatherRes.json()
-
-if (!geoRes.ok) {
-  throw new Error("Location API failed")
-}
-
-const geoData = await geoRes.json()
 
 // ==========================================
 // 2. AI ASSISTANT LOGIC WITH FLOATING TOGGLE
