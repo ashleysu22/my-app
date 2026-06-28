@@ -33,8 +33,8 @@ const deleteTodo = (id) => {
 
 const weather = ref({
   temperature: '--',
-  description: '載入中...',
-  location: '取得位置中...'
+  description: '...', //weatherCodeMap
+  location: '...'
 })
 
 const weatherCodeMap = {
