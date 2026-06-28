@@ -245,8 +245,8 @@ const getPeriodStatus = () => {
   const last = new Date(y, m - 1, d)
 
   const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24))
-  const cycle = Number(settings.cycleLength || 28)
-  const duration = Number(settings.duration || 5)
+  const cycle = Number(settings.cycleLength) || 28
+  const duration = Number(settings.duration) || 5
 
   const cycleDay = ((diffDays % cycle) + cycle) % cycle
   const inPeriod = cycleDay >= 0 && cycleDay < duration
@@ -339,43 +339,6 @@ ${rule}
 用户问题：
 ${message}
 `
-}
-
-const buildAIContext = (message) => {
-  const period = getPeriodStatus()
-
-  const intent = detectPeriodIntent(message)
-
-  const baseContext = `
-你是女性生活AI助手，会结合天气、地点、经期状态给建议。
-
-📍地点：${weather.value.location}
-🌤️天气：${weather.value.temperature}°C ${weather.value.description}
-
-🩸经期状态：
-- 是否经期：${period.inPeriod ? '是' : '否'}
-- 当前周期第：${period.cycleDay || 0}天
-- 距离下次经期：${period.daysToNext}天
-${period.inPeriod ? `- 当前第 ${period.dayInPeriod} 天经期` : ''}
-
-用户问题：
-${message}
-`
-
-  // ⭐关键规则增强（经期问题强制建议模式）
-  if (intent) {
-    return baseContext + `
-
-⚠️ 强制规则（必须执行）：
-- 如果用户询问经期相关问题（例如：什么时候来、肚子痛、周期），
-  必须优先给“健康建议 + 当前状态解释”
-- 不允许只解释原理
-- 必须给行动建议（喝热水 / 休息 / 热敷 / 注意事项）
-- 用 3~6 行简短回答
-`
-  }
-
-  return baseContext
 }
 
 const sendChatMessage = async (forcedText = '') => {
