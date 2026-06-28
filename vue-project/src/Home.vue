@@ -248,7 +248,7 @@ const getPeriodStatus = () => {
   const cycle = Number(settings.cycleLength || 28)
   const duration = Number(settings.duration || 5)
 
-  const cycleDay = diffDays % cycle
+  const cycleDay = ((diffDays % cycle) + cycle) % cycle
   const inPeriod = cycleDay >= 0 && cycleDay < duration
 
   return {
@@ -278,6 +278,105 @@ const scrollToBottom = async () => {
     chatHistoryRef.value.scrollTop = chatHistoryRef.value.scrollHeight;
   }
 };
+
+const getIntentLevel = (text) => {
+  const high = ['痛经', '肚子痛', '很痛', '难受']
+  const medium = ['经期', '月经', '什么时候来', '周期']
+  const low = ['预测', '提前', '延迟']
+
+  if (high.some(k => text.includes(k))) return 'HIGH'
+  if (medium.some(k => text.includes(k))) return 'MID'
+  if (low.some(k => text.includes(k))) return 'LOW'
+  return 'NONE'
+}
+
+const buildSystemPrompt = (message) => {
+  const period = getPeriodStatus()
+  const intent = getIntentLevel(message)
+
+  let rule = ""
+
+  if (intent === 'HIGH') {
+    rule = `
+⚠️ 医疗优先级最高：
+必须立即给：
+- 缓解建议（热敷 / 止痛 / 休息）
+- 风险提醒（如异常需就医）
+- 禁止解释原理
+`
+  }
+
+  if (intent === 'MID') {
+    rule = `
+必须输出：
+- 当前经期状态
+- 生活建议（至少3条）
+- 简短解释（最多2行）
+`
+  }
+
+  if (intent === 'LOW') {
+    rule = `
+输出：
+- 预测信息
+- 准备建议
+`
+  }
+
+  return `
+你是女性健康AI助手
+
+${rule}
+
+📍地点：${weather.value.location}
+🌤️天气：${weather.value.temperature}°C ${weather.value.description}
+
+🩸经期状态：
+- 是否经期：${period.inPeriod ? "是" : "否"}
+- 当前周期第：${period.cycleDay}
+- 距离下次经期：${period.daysToNext}
+
+用户问题：
+${message}
+`
+}
+
+const buildAIContext = (message) => {
+  const period = getPeriodStatus()
+
+  const intent = detectPeriodIntent(message)
+
+  const baseContext = `
+你是女性生活AI助手，会结合天气、地点、经期状态给建议。
+
+📍地点：${weather.value.location}
+🌤️天气：${weather.value.temperature}°C ${weather.value.description}
+
+🩸经期状态：
+- 是否经期：${period.inPeriod ? '是' : '否'}
+- 当前周期第：${period.cycleDay || 0}天
+- 距离下次经期：${period.daysToNext}天
+${period.inPeriod ? `- 当前第 ${period.dayInPeriod} 天经期` : ''}
+
+用户问题：
+${message}
+`
+
+  // ⭐关键规则增强（经期问题强制建议模式）
+  if (intent) {
+    return baseContext + `
+
+⚠️ 强制规则（必须执行）：
+- 如果用户询问经期相关问题（例如：什么时候来、肚子痛、周期），
+  必须优先给“健康建议 + 当前状态解释”
+- 不允许只解释原理
+- 必须给行动建议（喝热水 / 休息 / 热敷 / 注意事项）
+- 用 3~6 行简短回答
+`
+  }
+
+  return baseContext
+}
 
 const sendChatMessage = async (forcedText = '') => {
   const targetText = forcedText || userInput.value;
