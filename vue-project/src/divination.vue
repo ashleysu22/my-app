@@ -45,7 +45,7 @@ const throwJiaobei = () => {
     <button class="back-btn" @click="router.push('/')">← 返回</button>
 
     <div class="jiaobei-container">
-      <h2 class="title">祈福掷筊</h2>
+      <h2 class="title logo wenkai">祈福掷筊</h2>
       
       <div class="result-display" :class="{ 'shaking': isThrowing }">
         <!-- 筊杯 1 -->

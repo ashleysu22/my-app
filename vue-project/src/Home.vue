@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue';
+import { ref, watch, nextTick, onMounted } from 'vue';
 import cherryLogoImg from '@/assets/cherry-logo.png';
 
 
@@ -26,6 +26,96 @@ const addTodo = () => {
 const deleteTodo = (id) => {
   todos.value = todos.value.filter(t => t.id !== id);
 };
+
+// ==========================================
+// WEATHER
+// ==========================================
+
+const weather = ref({
+  temperature: '--',
+  description: '載入中...',
+  location: '取得位置中...'
+})
+
+const weatherCodeMap = {
+  0: '晴天 ☀️',
+  1: '大致晴朗 🌤️',
+  2: '局部多雲 ⛅',
+  3: '陰天 ☁️',
+  45: '霧 🌫️',
+  48: '濃霧 🌫️',
+  51: '毛毛雨 🌦️',
+  53: '毛毛雨 🌦️',
+  55: '毛毛雨 🌦️',
+  61: '小雨 🌧️',
+  63: '中雨 🌧️',
+  65: '大雨 🌧️',
+  71: '小雪 ❄️',
+  80: '陣雨 🌦️',
+  95: '雷雨 ⛈️'
+}
+
+const loadWeather = () => {
+
+  if (!navigator.geolocation) {
+    weather.value.description = '瀏覽器不支援定位'
+    weather.value.location = ''
+    return
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+
+      const { latitude, longitude } = position.coords
+
+      try {
+
+        const weatherRes = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`
+        )
+
+        const weatherData = await weatherRes.json()
+
+        const geoRes = await fetch(
+          `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}`
+        )
+
+        const geoData = await geoRes.json()
+
+        weather.value.temperature =
+          weatherData.current.temperature_2m
+
+        weather.value.description =
+          weatherCodeMap[weatherData.current.weather_code] || '未知'
+
+        weather.value.location =
+          geoData.address.city ||
+          geoData.address.town ||
+          geoData.address.village ||
+          geoData.address.state ||
+          '未知位置'
+
+      } catch (err) {
+
+        console.error(err)
+
+        weather.value.description = '取得失敗'
+        weather.value.location = '未知位置'
+
+      }
+
+    },
+    () => {
+      weather.value.description = '請允許定位'
+      weather.value.location = ''
+    }
+  )
+
+}
+
+onMounted(() => {
+  loadWeather()
+})
 
 // ==========================================
 // 2. AI ASSISTANT LOGIC WITH FLOATING TOGGLE
@@ -195,16 +285,21 @@ const sendChatMessage = async (forcedText = '') => {
   <div class="cards-wrapper">
     <!-- 1. 天氣卡片 -->
     <div class="card weather-card">
-      <div class="card-title weather-title"><span>🌤️</span> 天氣</div>
+      <div class="card-title weather-title logo wenkai"><span>🌤️</span> 天氣</div>
       <div class="card-content">
-        <div class="temp">30°C - 多雲時晴</div>
-        <div class="location">📍 檳城，喬治市</div>
+        <div class="temp">
+          {{ weather.temperature }}°C - {{ weather.description }}
+        </div>
+
+        <div class="location">
+          📍 {{ weather.location }}
+        </div>
       </div>
     </div>
 
     <!-- 2. 待辦事項卡片 -->
     <div class="card main-card">
-      <div class="card-title todo-title"><span>✅</span> 待辦事項</div>
+      <div class="card-title todo-title logo wenkai"><span>✅</span> 待辦事項</div>
       
       <!-- 輸入區域 -->
       <div class="input-section"> 
