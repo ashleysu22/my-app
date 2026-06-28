@@ -141,23 +141,23 @@ const loadRecommendations = async () => {
 
     const city = weather.value.location
 
-    const prompt = `
-你是一位旅遊導遊。
+    const prompt = 
+    `你是一位旅遊導遊。
 
-請推薦 ${city} 附近：
+    請推薦 ${city} 附近：
 
-1. 三間美食
-2. 三個景點
+    1. 三間美食
+    2. 三個景點
 
-只回答 JSON：
+    只回答 JSON：
 
-[
-{
-"name":"xxx",
-"type":"美食"
-}
-]
-`
+    [
+    {
+    "name":"xxx",
+    "type":"美食"
+    }
+    ]
+    `
 
     const response = await fetch(
       `https://openrouter.ai/api/v1/chat/completions`,
@@ -178,6 +178,7 @@ const loadRecommendations = async () => {
       })
       }
     )
+    console.log(import.meta.env.VITE_OPENROUTER_API_KEY)
 
     const data = await response.json()
 
