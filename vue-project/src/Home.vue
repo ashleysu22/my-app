@@ -76,7 +76,19 @@ const loadWeather = () => {
 
         const weatherData = await weatherRes.json()
 
+        console.log(weatherData)
+
+        weather.value.temperature =
+          weatherData.current.temperature_2m
+
+        weather.value.description =
+          weatherCodeMap[weatherData.current.weather_code] || '未知天氣'
+
         console.log(weatherRes.status)
+
+        if (!weatherRes.ok) {
+  throw new Error('Weather API failed')
+}
 
 
         const geoRes = await fetch(
