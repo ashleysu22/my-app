@@ -103,6 +103,8 @@ const loadWeather = () => {
           geoData.principalSubdivision ||
           geoData.countryName
 
+          await loadRecommendations()
+
       } catch (err) {
 
         console.error(err)
@@ -125,9 +127,85 @@ onMounted(() => {
   loadWeather()
 })
 
+// ==========================================
+// 2. Recomended card
+// ==========================================
+const recommendations = ref([])
+const loadingRecommend = ref(false)
+
+const loadRecommendations = async () => {
+
+  loadingRecommend.value = true
+
+  try {
+
+    const city = weather.value.location
+
+    const prompt = `
+你是一位旅遊導遊。
+
+請推薦 ${city} 附近：
+
+1. 三間美食
+2. 三個景點
+
+只回答 JSON：
+
+[
+{
+"name":"xxx",
+"type":"美食"
+}
+]
+`
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          contents:[
+            {
+              parts:[
+                {
+                  text:prompt
+                }
+              ]
+            }
+          ]
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    let text =
+      data.candidates[0].content.parts[0].text
+
+    text = text
+      .replace(/```json/g,"")
+      .replace(/```/g,"")
+      .trim()
+
+    recommendations.value = JSON.parse(text)
+
+  }
+  catch(err){
+
+    console.log(err)
+
+  }
+
+  loadingRecommend.value = false
+
+}
+
 
 // ==========================================
-// 2. AI ASSISTANT LOGIC WITH FLOATING TOGGLE
+// 3. AI ASSISTANT LOGIC WITH FLOATING TOGGLE
 // ==========================================
 const isChatOpen = ref(false); 
 const userInput = ref('');
@@ -335,6 +413,31 @@ const sendChatMessage = async (forcedText = '') => {
       
       <!-- 空狀態提示 -->
       <p v-if="todos.length === 0" class="empty-msg">今天沒有待辦事項！ ✨</p>
+    </div>
+
+    <!-- 推薦卡片 -->
+    <div class="card recommend-card">
+      <div class="card-title logo wenkai">
+        🍜 附近推薦
+      </div>
+
+      <div v-if="loadingRecommend">
+        正在搜尋附近好去處...
+      </div>
+
+      <div
+        v-for="place in recommendations"
+        :key="place.name"
+        class="recommend-item"
+      >
+        <div class="recommend-name">
+          {{ place.name }}
+        </div>
+
+        <div class="recommend-type">
+          {{ place.type }}
+        </div>
+      </div>
     </div>
 
     <!-- 1. Round Floating Action Button Icon -->
@@ -869,6 +972,23 @@ color: #2b2b2b;}
   object-fit: contain;  /* Keeps the logo clean without squishing it */
   border-radius: 50%;   /* Keeps it circular if the logo background isn't transparent */
   pointer-events: none; /* Prevents mobile phone drag issues */
+}
+
+.recommend-item{
+    margin:12px 0;
+    padding:12px;
+    border-radius:12px;
+    background:#fff7fa;
+}
+
+.recommend-name{
+    font-weight:bold;
+    color:#d63384;
+}
+
+.recommend-type{
+    color:#888;
+    font-size:.85rem;
 }
 
 </style>
