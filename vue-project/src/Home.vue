@@ -313,7 +313,7 @@ const sendChatMessage = async (forcedText = '') => {
   `
 
   try {
-    const aiResponse = await callOpenRouter(context);
+    const aiResponse = await callOpenRouter(targetText, context)
 
     chatMessages.value.push({
       id: Date.now() + 1,
@@ -336,7 +336,7 @@ const sendChatMessage = async (forcedText = '') => {
   scrollToBottom();
 };
 
- callOpenRouter = async (message, context) => {
+const callOpenRouter = async (message, context) => {
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
