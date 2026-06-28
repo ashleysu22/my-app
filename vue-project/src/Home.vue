@@ -735,8 +735,6 @@ color: #2b2b2b;}
 }
 
 .avatar-icon{
-  width: 36px;
-  height: 36px;
   object-fit: contain;
   pointer-events: none; /* Prevents long-press drag bugs on mobile phones */
 }
