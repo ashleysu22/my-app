@@ -184,12 +184,13 @@ const loadRecommendations = async () => {
 
     let text = data.choices[0].message.content
 
-    text = text
-      .replace(/```json/g,"")
-      .replace(/```/g,"")
-      .trim()
-
-    recommendations.value = JSON.parse(text)
+    try {
+      text = text.replace(/```json/g,"").replace(/```/g,"").trim()
+      const parsed = JSON.parse(text)
+      recommendations.value = parsed
+    } catch (e) {
+      console.error("JSON parse failed:", text)
+    }
 
   }
   catch(err){
