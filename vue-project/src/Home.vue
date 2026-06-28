@@ -137,7 +137,7 @@ const loadRecommendations = async () => {
   loadingRecommend.value = true
 
   try {
-    const city = weather.value.location
+    const city = weather.value.location || "Kuching"
 
     if (!city || city === '...' || city === '未知位置') {
       throw new Error('City not ready yet')
@@ -178,8 +178,7 @@ const loadRecommendations = async () => {
           messages: [
             { role: "user", content: prompt }
           ],
-          temperature: 0.7,
-          response_format: { type: "json_object" }
+          temperature: 0.7
         })
       }
     )
