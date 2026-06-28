@@ -77,23 +77,16 @@ const loadWeather = () => {
         const weatherData = await weatherRes.json()
 
         const geoRes = await fetch(
-          `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}`
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=zh`
         )
 
         const geoData = await geoRes.json()
 
-        weather.value.temperature =
-          weatherData.current.temperature_2m
-
-        weather.value.description =
-          weatherCodeMap[weatherData.current.weather_code] || '未知'
-
         weather.value.location =
-          geoData.address.city ||
-          geoData.address.town ||
-          geoData.address.village ||
-          geoData.address.state ||
-          '未知位置'
+          geoData.city ||
+          geoData.locality ||
+          geoData.principalSubdivision ||
+          geoData.countryName
 
       } catch (err) {
 
@@ -116,6 +109,18 @@ const loadWeather = () => {
 onMounted(() => {
   loadWeather()
 })
+
+if (!weatherRes.ok) {
+  throw new Error("Weather API failed")
+}
+
+const weatherData = await weatherRes.json()
+
+if (!geoRes.ok) {
+  throw new Error("Location API failed")
+}
+
+const geoData = await geoRes.json()
 
 // ==========================================
 // 2. AI ASSISTANT LOGIC WITH FLOATING TOGGLE
