@@ -1,5 +1,7 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue';
+import cherryLogoImg from '@/assets/cherry-logo.png';
+
 
 // ==========================================
 // 1. TODO LIST LOGIC
@@ -233,7 +235,7 @@ const sendChatMessage = async (forcedText = '') => {
 
     <!-- 1. Round Floating Action Button Icon -->
     <div v-if="!isChatOpen" class="ai-floating-bubble" @click="isChatOpen = true">
-      <img src="@/assets/cherry-logo.png" alt="Cherry AI" class="bubble-avatar-img" />
+      <img :src="cherryLogoImg" alt="Cherry AI" class="bubble-avatar-img" />
       <span class="bubble-ping"></span>
     </div>
 
