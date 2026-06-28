@@ -350,7 +350,7 @@ const scrollToBottom = async () => {
 
 const sendChatMessage = async (forcedText = '') => {
   const targetText = forcedText || userInput.value;
-  
+
   if (!targetText.trim() || isAiTyping.value) return;
 
   chatMessages.value.push({
@@ -359,27 +359,62 @@ const sendChatMessage = async (forcedText = '') => {
     text: targetText
   });
 
-  if (!forcedText) {
-    userInput.value = '';
-  }
-  
+  if (!forcedText) userInput.value = '';
+
   scrollToBottom();
   isAiTyping.value = true;
 
-  setTimeout(() => {
-    const randomIndex = Math.floor(Math.random() * randomResponses.length);
-    const aiResponse = randomResponses[randomIndex];
+  try {
+    const aiResponse = await callOpenRouter(targetText);
 
     chatMessages.value.push({
       id: Date.now() + 1,
       role: 'ai',
       text: aiResponse
     });
-    
-    isAiTyping.value = false;
-    scrollToBottom();
-  }, 1200);
+
+  } catch (err) {
+    console.error(err);
+
+    chatMessages.value.push({
+      id: Date.now() + 1,
+      role: 'ai',
+      text: "AI 出错了，请稍后再试 🙏"
+    });
+
+  }
+
+  isAiTyping.value = false;
+  scrollToBottom();
 };
+
+const callOpenRouter = async (message) => {
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": "http://localhost",
+      "X-Title": "Vue Chat App"
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "你是一个温柔可爱的中文AI助手，用简短回答用户问题。"
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ]
+    })
+  })
+
+  const data = await res.json()
+  return data?.choices?.[0]?.message?.content || "没有回复"
+}
 </script>
 
 <template>
