@@ -226,17 +226,14 @@ const userInput = ref('');
 const isAiTyping = ref(false);
 const chatHistoryRef = ref(null);
 
-const settings = ref(JSON.parse(localStorage.getItem('periodSettings')) || {})
 
-const getPeriodData = () => {
-  return JSON.parse(localStorage.getItem('periodSettings')) || {
-    lastDate: null,
-    duration: 5,
-    cycleLength: 28
-  }
-}
+onMounted(() => {
+  window.addEventListener('period-update', () => {
+    console.log('经期数据更新，AI可以刷新')
+  })
+})
 
-const getPeriodStatus = () => {
+export const getPeriodStatus = () => {
   const settings = JSON.parse(localStorage.getItem('periodSettings')) || {}
 
   if (!settings.lastDate) {
@@ -300,23 +297,23 @@ const sendChatMessage = async (forcedText = '') => {
 
   const period = getPeriodStatus()
 
-const context = `
-你是女性生活AI助手，会结合天气、地点、经期状态给建议。
+  const context = `
+  你是女性生活AI助手，会结合天气、地点、经期状态给建议。
 
-📍地点：${weather.value.location}
-🌤️天气：${weather.value.temperature}°C ${weather.value.description}
+  📍地点：${weather.value.location}
+  🌤️天气：${weather.value.temperature}°C ${weather.value.description}
 
-🩸经期状态：
-${period.inPeriod ? `正在经期第 ${period.dayInPeriod} 天` : "非经期"}
-${period.inPeriod ? "请避免冷饮，建议休息和热敷" : ""}
-距离下次经期：${period.daysToNext} 天
+  🩸经期状态：
+  ${period.inPeriod ? `正在经期第 ${period.dayInPeriod} 天` : "非经期"}
+  ${period.inPeriod ? "请避免冷饮，建议休息和热敷" : ""}
+  距离下次经期：${period.daysToNext} 天
 
-用户问题：
-${message}
-`
+  用户问题：
+  ${targetText}
+  `
 
   try {
-    const aiResponse = await callOpenRouter(targetText);
+    const aiResponse = await callOpenRouter(context);
 
     chatMessages.value.push({
       id: Date.now() + 1,
@@ -339,7 +336,7 @@ ${message}
   scrollToBottom();
 };
 
-const callOpenRouter = async (message) => {
+const callOpenRouter = async (context) => {
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -353,11 +350,11 @@ const callOpenRouter = async (message) => {
       messages: [
         {
           role: "system",
-          content: "你是一个温柔可爱的中文AI助手，用简短回答用户问题。"
+          content: "你是一个女性生活AI助手，会结合经期、天气给出温柔建议。"
         },
         {
           role: "user",
-          content: message
+          content: context
         }
       ]
     })

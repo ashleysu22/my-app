@@ -70,7 +70,8 @@ const settings = ref(JSON.parse(localStorage.getItem('periodSettings')) || defau
 
 // 2. 监听 settings 变化并自动保存
 watch(settings, (newVal) => {
-  localStorage.setItem('periodSettings', JSON.stringify(newVal));
+-  localStorage.setItem('periodSettings', JSON.stringify(newVal));
++  savePeriodSettings(newVal)
 }, { deep: true });
 
 const attributes = computed(() => {
@@ -136,6 +137,13 @@ const attributes = computed(() => {
 const formatDate = (date) => {
   return `${date.getMonth() + 1}月${date.getDate()}日`;
 };
+
+const savePeriodSettings = (val) => {
+  localStorage.setItem('periodSettings', JSON.stringify(val))
+
+  // 通知其他页面更新
+  window.dispatchEvent(new Event('period-update'))
+}
 </script>
 
 
