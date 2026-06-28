@@ -436,19 +436,19 @@ const sendChatMessage = async (forcedText = '') => {
         正在搜尋附近好去處...
       </div>
 
-      <div
-        v-for="place in recommendations"
-        :key="place.name"
-        class="recommend-item"
-      >
-        <div class="recommend-name">
-          {{ place.name }}
-        </div>
+      <div class="recommend-item">
+  <div class="row">
+    <div class="left">🍜</div>
 
-        <div class="recommend-type">
-          {{ place.type }}
-        </div>
+    <div class="right">
+      <div class="name">{{ place.name }}</div>
+      <div class="meta">⭐ {{ place.rating }} | 📍 {{ place.distance }}</div>
+      <div class="tags">
+        <span v-for="r in place.recommend"># {{ r }}</span>
       </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- 1. Round Floating Action Button Icon -->
