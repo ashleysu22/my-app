@@ -144,21 +144,24 @@ const loadRecommendations = async () => {
     }
 
     const prompt = `
-你是一位旅遊導遊。
+    你是一个严格 JSON API。
 
-請推薦 ${city} 附近：
+    ⚠️ 绝对禁止输出任何中文、解释、Markdown、符号。
 
-1. 三間美食
-2. 三個景點
+    只能输出 JSON 数组，格式如下：
 
-只輸出「合法 JSON」，不要任何文字、不要 markdown。
+    [
+      {
+        "name": "餐厅名称",
+        "type": "美食",
+        "rating": 4.5,
+        "distance": "850m",
+        "recommend": ["海南吐司", "半熟蛋"]
+      }
+    ]
 
-格式：
-[
-  { "name": "xxx", "type": "美食" },
-  { "name": "xxx", "type": "景點" }
-]
-`
+    如果不符合 JSON，视为错误。
+    `
 
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -175,12 +178,13 @@ const loadRecommendations = async () => {
           messages: [
             { role: "user", content: prompt }
           ],
-          temperature: 0.7
+          temperature: 0.7,
+          response_format: { type: "json_object" }
         })
       }
     )
 
-    // ❗ 关键防炸点
+    // 
     if (!response.ok) {
       const errText = await response.text()
       throw new Error("OpenRouter Error: " + errText)
@@ -436,18 +440,26 @@ const sendChatMessage = async (forcedText = '') => {
         正在搜尋附近好去處...
       </div>
 
-      <div class="recommend-item">
+
+  <div v-for="place in recommendations" :key="place.name" class="recommend-item">
   <div class="row">
     <div class="left">🍜</div>
 
     <div class="right">
       <div class="name">{{ place.name }}</div>
-      <div class="meta">⭐ {{ place.rating }} | 📍 {{ place.distance }}</div>
+
+      <div class="meta">
+        ⭐ {{ place.rating || '4.5' }} | 📍 {{ place.distance || '未知' }}
+      </div>
+
       <div class="tags">
-        <span v-for="r in place.recommend"># {{ r }}</span>
+        <span v-for="r in place.recommend" :key="r">
+          # {{ r }}
+        </span>
       </div>
     </div>
   </div>
+
 </div>
     </div>
 
