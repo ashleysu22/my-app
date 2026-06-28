@@ -233,7 +233,7 @@ onMounted(() => {
   })
 })
 
-export const getPeriodStatus = () => {
+const getPeriodStatus = () => {
   const settings = JSON.parse(localStorage.getItem('periodSettings')) || {}
 
   if (!settings.lastDate) {
