@@ -267,7 +267,7 @@ const preQuestions = ref([
 ]);
 
 const chatMessages = ref([
-  { id: 1, role: 'ai', text: '你好！我是妳的小助手阿比 🌸 隨時可以和我聊聊妳的今日心情、願望，或點擊下方快捷鍵向我提問喔！' }
+  { id: 1, role: 'ai', text: '你好！我是妳的生活小助手阿比 🌸 隨時可以和我聊聊妳的今日心情、願望，或點擊下方快捷鍵向我提問喔！' }
 ]);
 
 
@@ -456,7 +456,7 @@ const callOpenRouter = async (message, context) => {
         <div class="chat-box-header">
           <div class="chat-header-title">
             <img src="@/assets/cherry-logo.png" alt="Cherry AI" class="header-avatar-img" />
-            小助手
+            生活小助手
           </div>
           <button class="chat-close-x" @click="isChatOpen = false">✕</button>
         </div>
