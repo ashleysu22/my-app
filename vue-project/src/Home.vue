@@ -756,4 +756,13 @@ color: #2b2b2b;}
   align-items: center;
   gap: 6px;
 }
+
+.bubble-avatar-img {
+  width: 34px;          /* Shrink this number down (try 30px if you want it even smaller!) */
+  height: 34px;         /* Keep this matching the width */
+  object-fit: contain;  /* Keeps the logo clean without squishing it */
+  border-radius: 50%;   /* Keeps it circular if the logo background isn't transparent */
+  pointer-events: none; /* Prevents mobile phone drag issues */
+}
+
 </style>
