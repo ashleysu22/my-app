@@ -163,7 +163,7 @@ const loadRecommendations = async () => {
     如果不符合 JSON，视为错误。
     `
 
-    const response = await fetch(
+    /***const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
@@ -181,7 +181,27 @@ const loadRecommendations = async () => {
           temperature: 0.7
         })
       }
-    )
+    )***/
+
+    const response = await fetch(
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+        contents:[
+            {
+                parts:[
+                    {
+                        text:prompt
+                    }
+                ]
+            }
+        ]
+    })
+})
 
     // 
     if (!response.ok) {
@@ -189,9 +209,14 @@ const loadRecommendations = async () => {
       throw new Error("OpenRouter Error: " + errText)
     }
 
+    //const data = await response.json()
+
+    //const content = data?.choices?.[0]?.message?.content
+
     const data = await response.json()
 
-    const content = data?.choices?.[0]?.message?.content
+    const content =
+    data.candidates?.[0]?.content?.parts?.[0]?.text
 
     if (!content) {
       throw new Error("No content returned from API")
@@ -395,7 +420,8 @@ ${targetText}
 `
 
   try {
-    const aiResponse = await callOpenRouter(targetText, context)
+    //const aiResponse = await callOpenRouter(targetText, context)
+    const aiResponse = await callGemini(targetText, context)
 
     chatMessages.value.push({
       id: Date.now() + 1,
@@ -418,7 +444,7 @@ ${targetText}
   scrollToBottom();
 };
 
-const callOpenRouter = async (message, context) => {
+/***const callOpenRouter = async (message, context) => {
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -444,6 +470,34 @@ const callOpenRouter = async (message, context) => {
 
   const data = await res.json()
   return data?.choices?.[0]?.message?.content || "没有回复"
+}***/
+
+const callGemini = async (message, context) => {
+
+    const res = await fetch(
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+    {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            contents:[
+                {
+                    parts:[
+                        {
+                            text: context + "\n\n" + message
+                        }
+                    ]
+                }
+            ]
+        })
+    })
+
+    const data = await res.json()
+
+    return data.candidates?.[0]?.content?.parts?.[0]?.text
+        || "AI 沒有回覆"
 }
 </script>
 
