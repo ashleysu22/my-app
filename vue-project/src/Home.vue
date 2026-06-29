@@ -498,6 +498,8 @@ const callGemini = async (message, context) => {
     return data.candidates?.[0]?.content?.parts?.[0]?.text
         || "AI 沒有回覆"
 }
+
+console.log(import.meta.env.VITE_GEMINI_API_KEY)
 </script>
 
 <template>
